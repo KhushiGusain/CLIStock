@@ -229,8 +229,8 @@ export default function WatchlistStocksScreen({ route }) {
         data={stocksWithPrices}
         keyExtractor={(item, idx) => (item.symbol || item.ticker) + idx}
         numColumns={2}
-        contentContainerStyle={{ alignItems: 'center', paddingTop: 8, paddingBottom: 24 }}
-        columnWrapperStyle={{ justifyContent: 'space-between', width: 400, marginBottom: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
+        columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 16, gap: 8 }}
         renderItem={({ item, index }) => (
           <View
             key={(item.ticker || item.symbol) + index}
@@ -238,7 +238,7 @@ export default function WatchlistStocksScreen({ route }) {
               width: '48%',
               backgroundColor: theme.card,
               borderRadius: 16,
-              padding: 16,
+              padding: 12,
               marginBottom: 12,
               shadowColor: '#000',
               shadowOpacity: 0.08,
@@ -248,6 +248,7 @@ export default function WatchlistStocksScreen({ route }) {
               borderWidth: 1,
               borderColor: theme.mode === 'dark' ? theme.border : '#F0F0F0',
               position: 'relative',
+              minHeight: 120,
             }}
           >
             {/* Delete button - positioned absolutely in top right */}
@@ -255,11 +256,11 @@ export default function WatchlistStocksScreen({ route }) {
               onPress={() => handleDeleteStock(item.ticker || item.symbol, item.name)}
               style={{
                 position: 'absolute',
-                top: 12,
-                right: 12,
-                width: 28,
-                height: 28,
-                borderRadius: 14,
+                top: 8,
+                right: 8,
+                width: 24,
+                height: 24,
+                borderRadius: 12,
                 backgroundColor: '#FF4444',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -271,7 +272,7 @@ export default function WatchlistStocksScreen({ route }) {
                 elevation: 2,
               }}
             >
-              <Ionicons name="close" size={16} color="#FFFFFF" />
+              <Ionicons name="close" size={14} color="#FFFFFF" />
             </TouchableOpacity>
 
             {/* Touchable area for navigating to details */}
@@ -283,15 +284,15 @@ export default function WatchlistStocksScreen({ route }) {
               <View style={{ 
                 flexDirection: 'row', 
                 alignItems: 'center', 
-                marginBottom: 12,
-                marginTop: 8, 
+                marginBottom: 10,
+                marginTop: 6, 
               }}>
                 {/* Icon */}
                 <View style={{ 
-                  width: 48, 
-                  height: 48, 
-                  borderRadius: 12, 
-                  marginRight: 12, 
+                  width: 40, 
+                  height: 40, 
+                  borderRadius: 10, 
+                  marginRight: 8, 
                   backgroundColor: theme.iconBackground, 
                   alignItems: 'center', 
                   justifyContent: 'center',
@@ -305,24 +306,24 @@ export default function WatchlistStocksScreen({ route }) {
                 }}>
                   <Ionicons 
                     name={getStockIcon(item.ticker || item.symbol)} 
-                    size={24} 
+                    size={20} 
                     color="#11B981" 
                   />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ 
-                    fontSize: 16, 
+                    fontSize: 14, 
                     fontWeight: 'bold', 
-                    lineHeight: 20, 
+                    lineHeight: 18, 
                     letterSpacing: 0.5, 
                     color: theme.text,
                     marginBottom: 2,
-                  }}>
+                  }} numberOfLines={1}>
                     {item.ticker || item.symbol}
                   </Text>
                   <Text style={{ 
-                    fontSize: 12, 
-                    lineHeight: 16, 
+                    fontSize: 11, 
+                    lineHeight: 14, 
                     letterSpacing: 0.3, 
                     color: theme.secondaryText,
                     marginTop: 1,
@@ -333,30 +334,30 @@ export default function WatchlistStocksScreen({ route }) {
               </View>
 
               {/* Price */}
-              <View style={{ marginTop: 8 }}>
+              <View style={{ marginTop: 6 }}>
                 <Text style={{ 
-                  fontSize: 18, 
+                  fontSize: 16, 
                   fontWeight: 'bold', 
                   color: theme.text,
-                  marginBottom: 4,
+                  marginBottom: 3,
                 }}>
                   ${item.currentPrice?.toFixed(2) || '0.00'}
                   {!item.hasRealData && (
-                    <Text style={{ fontSize: 10, color: theme.secondaryText }}> *</Text>
+                    <Text style={{ fontSize: 9, color: theme.secondaryText }}> *</Text>
                   )}
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
                   <Text style={{ 
-                    fontSize: 12, 
+                    fontSize: 11, 
                     color: item.change >= 0 ? '#10B981' : '#EF4444',
                     fontWeight: '600',
                   }}>
                     {item.change >= 0 ? '+' : ''}{item.change?.toFixed(2) || '0.00'}
                   </Text>
                   <Text style={{ 
-                    fontSize: 12, 
+                    fontSize: 11, 
                     color: theme.secondaryText,
-                    marginLeft: 4,
+                    marginLeft: 3,
                   }}>
                     ({item.changePercent || '0.00%'})
                   </Text>

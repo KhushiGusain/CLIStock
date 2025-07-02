@@ -94,12 +94,11 @@ export default function WatchlistScreen() {
       <FlatList
         data={watchlists}
         keyExtractor={item => item.name}
-        contentContainerStyle={{ alignItems: 'center', paddingTop: 18, paddingBottom: 24 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 18, paddingBottom: 24 }}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => handleSelect(index)}
             style={{
-              width: 400,
               backgroundColor: theme.card,
               borderRadius: 16,
               borderWidth: 1,
@@ -113,30 +112,31 @@ export default function WatchlistScreen() {
               shadowOpacity: 0.1,
               shadowRadius: 8,
               elevation: 3,
-              padding: 20,
+              padding: 16,
+              minHeight: 80,
             }}
           >
             {/* Left side - Watchlist icon and info */}
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
               <View style={{
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 borderRadius: 12,
                 backgroundColor: '#11B981',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginRight: 16,
+                marginRight: 12,
               }}>
-                <Ionicons name="list" size={24} color="#FFFFFF" />
+                <Ionicons name="list" size={22} color="#FFFFFF" />
               </View>
               
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ 
                   fontSize: 18, 
                   fontWeight: '600', 
                   color: theme.text,
                   marginBottom: 4,
-                }}>
+                }} numberOfLines={1}>
                   {item.name}
                 </Text>
                 <Text style={{ 

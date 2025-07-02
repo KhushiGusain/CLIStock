@@ -30,7 +30,7 @@ const QUOTE_CACHE_DURATION = 1 * 60 * 1000; // 1MINUTE for quotes
 const TIMESERIES_CACHE_DURATION = 15 * 60 * 1000; // 15MINUTES for chart data
 const NEWS_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6HOURS for news
 
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || '8DH00OI9P51T58L7';
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || '29RSVT4XO457J6NZ';
 
 function isCacheValid(timestamp, duration) {
   return timestamp && (Date.now() - timestamp < duration);
@@ -38,12 +38,12 @@ function isCacheValid(timestamp, duration) {
 
 // Top G/L endpoint
 app.get('/api/stocks/top-gainers-losers', async (req, res) => {
-  console.log('[Backend] Request for Top Gainers/Losers');
+  console.log('📊 [Backend] Request for Top Gainers/Losers');
   
   const now = Date.now();
   
   if (!cachedData.topGainersLosers || !isCacheValid(lastFetch.topGainersLosers, CACHE_DURATION)) {
-    console.log('[Backend] Fetching fresh data from Alpha Vantage...');
+    console.log('🌐 [Backend] Fetching fresh data from Alpha Vantage...');
     
     try {
       const response = await fetch(`https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=${ALPHA_VANTAGE_API_KEY}`);

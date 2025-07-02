@@ -1,12 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-// Backend URL used to create proxy for api usage
-const BACKEND_URL = __DEV__ 
-  ? Platform.OS === 'android' 
-    ? 'http://10.0.2.2:3001' 
-    : 'http://localhost:3001'
-  : 'https://your-production-backend.com'; // will replaced with production url most probably vercel or netlify
+const BACKEND_URL = 'https://cli-stock-git-main-khushi-gusains-projects.vercel.app';
+
+ // will replaced with production url most probably vercel or netlify
 
 console.log('🔧 [Config] Backend URL:', BACKEND_URL);
 

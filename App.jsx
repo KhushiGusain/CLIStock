@@ -2,10 +2,19 @@ import * as React from 'react';
 import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text, Image, View } from 'react-native';
+import { Text, Image, View, LogBox } from 'react-native';
 import { WatchlistProvider } from './WatchlistContext';
 import { ThemeProvider } from './ThemeContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+// Disable development error overlays
+LogBox.ignoreAllLogs();
+LogBox.ignoreLogs([
+  'Warning:',
+  'Error:',
+  'Require cycle:',
+  'Non-serializable values were found in the navigation state',
+]);
 
 import HomeScreen from './screens/HomeScreen';
 import WatchlistScreen from './screens/WatchlistScreen';
@@ -25,6 +34,37 @@ import WatchlistUnfillIcon from './assets/vectors/watchlist-unfill.png';
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const WatchlistStack = createNativeStackNavigator();
+
+// Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Log error to console but don't show on screen
+    console.log('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+          <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', padding: 20 }}>
+            Something went wrong. Please restart the app.
+          </Text>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 function HomeStackScreen() {
   return (
@@ -51,9 +91,10 @@ function WatchlistStackScreen() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <WatchlistProvider>
-        <NavigationContainer>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <WatchlistProvider>
+          <NavigationContainer>
           <Tab.Navigator
             screenOptions={({ route }) => ({
               tabBarShowLabel: false,
@@ -276,5 +317,6 @@ export default function App() {
         </NavigationContainer>
       </WatchlistProvider>
     </ThemeProvider>
+    </ErrorBoundary>
   );
 }

@@ -1,8 +1,6 @@
 # 📈 Stock Price App
 
-A comprehensive React Native mobile application for tracking stock prices, market trends, and financial news with sentiment analysis. Built with React Native CLI with Cool Usable UI 
-
-Prices are in $ as the API only provided that. Can be changed to RS by using standar coversion rate of 85-86
+A comprehensive React Native mobile application for tracking stock prices, market trends, and financial news with sentiment analysis. Built with React Native CLI and featuring a custom backend for efficient API management.
 
 ## ✨ Features
 
@@ -16,6 +14,13 @@ Prices are in $ as the API only provided that. Can be changed to RS by using sta
 - **Personal Watchlist**: Add/remove stocks to track
 - **Persistent Storage**: Watchlist data saved locally using AsyncStorage
 - **Quick Access**: Easy navigation to watchlist stocks
+
+### 👤 **User Profile Management**
+- **Editable Profile**: Update name and email with real-time validation
+- **Profile Photo Support**: Avatar display with camera integration placeholder
+- **Local Data Persistence**: Profile data stored using AsyncStorage
+- **Settings Section**: Notifications, privacy, and help options
+- **App Information**: Version and build details display
 
 ### 📰 **News & Sentiment Analysis**
 - **Financial News**: Latest market news and updates
@@ -32,78 +37,25 @@ Prices are in $ as the API only provided that. Can be changed to RS by using sta
 - **Backend Proxy**: Custom backend to prevent API exhaustion
 - **Efficient Data Management**: Optimized data fetching and storage
 
-### 👤 **User Profile Management (Extra/Static)**
-- **Editable Profile**: Update name and email with real-time validation
-- **Profile Photo Support**: Avatar display with camera integration placeholder
-- **Local Data Persistence**: Profile data stored using AsyncStorage
-- **Settings Section**: Notifications, privacy, and help options
-- **App Information**: Version and build details display
+**Landing / Home Page**  
+<img src="https://github.com/user-attachments/assets/8591958e-895c-4395-9323-d5ae8ac1668b" style="width:300px; max-width:100%; height:auto;"/>
 
+**All Watchlists**  
+<img src="https://github.com/user-attachments/assets/98c6be03-f1f2-4bbb-bd7f-895db6ce8f53" style="width:300px; max-width:100%; height:auto;"/>
 
-<h3>App Screenshots</h3>
+**Inside My Dream Watchlist**  
+<img src="https://github.com/user-attachments/assets/b041f65c-2d1a-43de-a0f2-16130d4a1585" style="width:300px; max-width:100%; height:auto;"/>
 
-<table>
-  <tr>
-    <th>Landing / Home Page</th>
-    <th>All Watchlists</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/aafc8283-d1fd-42c2-8833-8db5db780c61" style="width:250px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/834a0457-c971-442d-b597-d7276caa3a23" style="width:250px; max-width:100%; height:auto;"/></td>
-  </tr>
+**Let's Check How AAPL is Doing**  
+<img src="https://github.com/user-attachments/assets/89b14de4-198c-42ca-8062-c1e751180030" style="width:300px; max-width:100%; height:auto;"/>
+<img src="https://github.com/user-attachments/assets/d9215bba-7aa0-4eab-9fe9-deb18c285e4c" style="width:300px; max-width:100%; height:auto;"/>
 
-  <tr>
-    <th>Inside My Dream Watchlist</th>
-    <th>How’s the Market Doing Today</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/3899570d-2606-489f-b1de-ac517ef95570" style="width:250px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/8c6f666a-6499-4d4d-9883-a07ef86dc2fb" style="width:250px; max-width:100%; height:auto;"/></td>
-  </tr>
+**How's the Market Doing Today**  
+<img src="https://github.com/user-attachments/assets/8c6f666a-6499-4d4d-9883-a07ef86dc2fb" style="width:300px; max-width:100%; height:auto;"/>
 
-  <tr>
-    <th colspan="2">Let's Check How AAPL is Doing</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/89b14de4-198c-42ca-8062-c1e751180030" style="width:250px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/d9215bba-7aa0-4eab-9fe9-deb18c285e4c" style="width:250px; max-width:100%; height:auto;"/></td>
-  </tr>
-</table>
+**Top Gainers Today..**
 
-<br/>
-
-<h3>Feature Highlights</h3>
-
-<table>
-  <tr>
-    <th>Top Gainers Today</th>
-    <th>Top Losers Today</th>
-    <th>Search Stock</th>
-    <th>Create Watchlists</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/fd6fe533-ba78-4155-b247-3812a85a8010" style="width:200px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/61ac6cbe-b240-4c6f-8cae-fe8e93a58853" style="width:200px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/1e524e13-ebcb-484e-a15b-9cdb6e97a425" style="width:200px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/a2354614-f4f9-41c7-be52-cb3511edcb8a" style="width:200px; max-width:100%; height:auto;"/></td>
-  </tr>
-</table>
-
-<br/>
-
-<h3>Extra Screens</h3>
-
-<table>
-  <tr>
-    <th>Dark Mode</th>
-    <th>Profile Page</th>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/9d65aee8-f611-41b4-82a4-e0b89f0ff3d2" style="width:250px; max-width:100%; height:auto;"/></td>
-    <td><img src="https://github.com/user-attachments/assets/905b7fed-394e-47f5-80d3-9acdadc2bb19" style="width:250px; max-width:100%; height:auto;"/></td>
-  </tr>
-</table>
-
+**Top Losers Today..**
 
 ## 🛠️ Tech Stack
 
@@ -126,7 +78,6 @@ Prices are in $ as the API only provided that. Can be changed to RS by using sta
 - React Native CLI
 - Android Studio (for Android development)
 
-
 ## 📱 App Structure
 
 ```
@@ -137,8 +88,8 @@ CLIStock-main/
 │   ├── TopGainersScreen.js # Top gainers list
 │   ├── TopLosersScreen.js  # Top losers list
 │   ├── NewsScreen.js       # News and sentiment
-│   ├── ProfileScreen.js    # User profile and settings
 │   ├── DetailsScreen.js    # Stock details and charts
+│   ├── ProfileScreen.js    # User profile and settings
 │   └── WatchlistStocksScreen.js
 ├── services/               # API services
 │   ├── alphaVantage.js    # Stock data API calls
@@ -167,16 +118,25 @@ The app uses a sophisticated caching system to minimize API calls:
 - **Chart Data**: 15-minute cache
 - **News Data**: 6-hour cache
 
+### Profile Management System
+The app includes a comprehensive profile management system:
+
+- **Profile Data Service**: Dedicated service for profile operations
+- **Local Storage**: Profile data persisted using AsyncStorage
+- **Real-time Editing**: Inline editing for name and email fields
+- **Data Validation**: Email format validation and empty field checks
+- **Error Handling**: Graceful error handling with user feedback
+- **Settings Integration**: Profile accessible through settings menu
+
 ### Navigation Structure
 - **Bottom Tab Navigation**: Home, Watchlist, News
 - **Stack Navigation**: Nested screens for detailed views
 - **Custom Tab Icons**: Animated tab indicators
 
 ### Data Persistence
-- **AsyncStorage**: Watchlist and theme preferences
+- **AsyncStorage**: Watchlist, theme preferences, and profile data
 - **Context API**: Global state management
 - **Backend Caching**: Server-side data caching
-
 
 ### Alpha Vantage Integration
 - **TOP_GAINERS_LOSERS** - Market movers
@@ -196,6 +156,13 @@ The app uses a sophisticated caching system to minimize API calls:
 - **Responsive Design**: Optimized for various screen sizes
 - **Smooth Animations**: Enhanced user experience
 
+### Profile Page Design
+- **Clean Interface**: Modern card-based layout with proper spacing
+- **Interactive Elements**: Edit buttons, save/cancel actions
+- **Loading States**: Activity indicators during data operations
+- **Theme Integration**: Full dark/light mode support
+- **Accessibility**: Proper touch targets and visual feedback
+
 ### Chart Features
 - **Multiple Timeframes**: 1min to monthly intervals
 - **Interactive Charts**: Zoom, pan, and touch interactions
@@ -203,14 +170,21 @@ The app uses a sophisticated caching system to minimize API calls:
 - **Volume Charts**: Trading volume visualization
 
 ## 🔒 Security & Performance
-The commit history for this project was unintentionally removed due to an accidental git push --force. The current state of the repository reflects the latest working version, but earlier commits are no longer available. All core features and code remain intact.
+
 ### API Management
 - **Rate Limiting**: Backend prevents API exhaustion
 - **Error Handling**: Graceful fallbacks for API failures
 - **Data Validation**: Input sanitization and validation
 
+### Profile Data Security
+- **Local Storage**: Profile data stored securely on device
+- **Input Validation**: Email format and field validation
+- **Error Recovery**: Graceful handling of storage errors
+- **Data Integrity**: Consistent data structure maintenance
+
 ### Performance Optimizations
 - **Lazy Loading**: Screens load on demand
 - **Image Optimization**: Efficient asset management
 - **Memory Management**: Proper cleanup and optimization
+- **Profile Caching**: Efficient profile data retrieval
 

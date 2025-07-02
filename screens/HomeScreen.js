@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, FlatList, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../ThemeContext';
@@ -154,9 +154,17 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background, paddingBottom: 16 }} edges={['top']}>
-      {/* TOP SECTION */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, height: 60 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={['top']}>
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ paddingBottom: 16 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        scrollEventThrottle={16}
+      >
+        {/* TOP SECTION */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, height: 60 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={AVATAR} style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }} />
           <View>
@@ -268,26 +276,43 @@ export default function HomeScreen({ navigation }) {
 
         {/* ENHANCED DROPDOWN RESULTS */}
         {showDropdown && (
-          <View style={{ 
-            position: 'absolute', 
-            top: 60, 
-            left: 20,
-            right: 20,
-            width: '100%',
-            maxWidth: 400,
-            backgroundColor: theme.card, 
-            borderRadius: 16, 
-            borderWidth: 1, 
-            borderColor: theme.border + '40',
-            zIndex: 10, 
-            maxHeight: 280, 
-            shadowColor: '#000', 
-            shadowOpacity: 0.15, 
-            shadowRadius: 20, 
-            shadowOffset: { width: 0, height: 8 },
-            elevation: 12,
-            overflow: 'hidden'
-          }}>
+          <>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'transparent',
+                zIndex: 999,
+              }}
+              activeOpacity={1}
+              onPress={() => {
+                setShowDropdown(false);
+                setSearchResults([]);
+              }}
+            />
+            <View style={{ 
+              position: 'absolute', 
+              top: 60, 
+              left: 20,
+              right: 20,
+              width: '100%',
+              maxWidth: 400,
+              backgroundColor: theme.card, 
+              borderRadius: 16, 
+              borderWidth: 1, 
+              borderColor: theme.border + '40',
+              zIndex: 1000, 
+              maxHeight: 280, 
+              shadowColor: '#000', 
+              shadowOpacity: 0.15, 
+              shadowRadius: 20, 
+              shadowOffset: { width: 0, height: 8 },
+              elevation: 12,
+              overflow: 'hidden'
+            }}>
             {/* SEARCH HEADER */}
             <View style={{ 
               paddingHorizontal: 18, 
@@ -355,6 +380,7 @@ export default function HomeScreen({ navigation }) {
                 <FlatList
                   data={searchResults}
                   keyExtractor={item => item['1. symbol']}
+                  nestedScrollEnabled={true}
                   renderItem={({ item, index }) => (
                     <TouchableOpacity 
                       onPress={() => handleSelectResult(item)} 
@@ -438,6 +464,7 @@ export default function HomeScreen({ navigation }) {
               )}
             </View>
           </View>
+        </>
         )}
       </View>
       {/* TOP GAINERS SECTION */}
@@ -482,6 +509,7 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
