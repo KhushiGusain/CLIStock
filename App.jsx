@@ -7,7 +7,6 @@ import { WatchlistProvider } from './WatchlistContext';
 import { ThemeProvider } from './ThemeContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// 
 import HomeScreen from './screens/HomeScreen';
 import WatchlistScreen from './screens/WatchlistScreen';
 import TopGainersScreen from './screens/TopGainersScreen';

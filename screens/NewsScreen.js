@@ -16,7 +16,7 @@ import { useTheme } from '../ThemeContext';
 import { getNewsAndSentiment, getNewsByTopic } from '../services/alphaVantage';
 
 const { width } = Dimensions.get('window');
-
+//ICON MAPPING FOR TOPICS
 const NEWS_TOPICS = [
   { id: 'all', label: 'All News', icon: 'newspaper', topic: '' },
   { id: 'technology', label: 'Technology', icon: 'laptop', topic: 'technology' },
@@ -75,7 +75,6 @@ export default function NewsScreen({ navigation }) {
 
   const formatTimeAgo = (timeString) => {
     try {
-      // Parse YYYYMMDDTHHMM format
       const year = parseInt(timeString.substring(0, 4));
       const month = parseInt(timeString.substring(4, 6)) - 1;
       const day = parseInt(timeString.substring(6, 8));
@@ -142,7 +141,7 @@ export default function NewsScreen({ navigation }) {
       }}
       activeOpacity={0.7}
     >
-      {/* Header */}
+      {/* HEADER */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
         <View style={{ flex: 1, marginRight: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
@@ -166,7 +165,7 @@ export default function NewsScreen({ navigation }) {
           </View>
         </View>
         
-        {/* Sentiment Badge */}
+        {/* SENTIMENT BADGE */}
         {item.overall_sentiment_label && (
           <View style={{
             flexDirection: 'row',
@@ -194,7 +193,7 @@ export default function NewsScreen({ navigation }) {
         )}
       </View>
 
-      {/* Title */}
+      {/* TITLE */}
       <Text style={{
         fontSize: 16,
         fontWeight: '700',
@@ -205,7 +204,7 @@ export default function NewsScreen({ navigation }) {
         {item.title}
       </Text>
 
-      {/* Summary */}
+      {/* SUMMARY */}
       <Text style={{
         fontSize: 14,
         color: theme.secondaryText,
@@ -215,7 +214,7 @@ export default function NewsScreen({ navigation }) {
         {item.summary}
       </Text>
 
-      {/* Topics */}
+      {/* TOPICS */}
       {item.topics && item.topics.length > 0 && (
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 }}>
           {item.topics.slice(0, 3).map((topic, idx) => (
@@ -240,7 +239,7 @@ export default function NewsScreen({ navigation }) {
         </View>
       )}
 
-      {/* Ticker Sentiment */}
+      {/* TICKER SENTIMENT */}
       {item.ticker_sentiment && item.ticker_sentiment.length > 0 && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
           <Ionicons name="pricetag" size={14} color={theme.secondaryText} style={{ marginRight: 6 }} />
@@ -274,7 +273,7 @@ export default function NewsScreen({ navigation }) {
         </View>
       )}
 
-      {/* Read More Indicator */}
+      {/* READ MORE INDICATOR */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 12 }}>
         <Text style={{
           fontSize: 12,
@@ -291,7 +290,7 @@ export default function NewsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={['top']}>
-      {/* Header */}
+      {/* HEADER */}
       <View style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -335,7 +334,7 @@ export default function NewsScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Topic Filter */}
+      {/* TOPIC FILTER */}
       <View style={{ paddingVertical: 16 }}>
         <ScrollView 
           horizontal 
@@ -376,7 +375,7 @@ export default function NewsScreen({ navigation }) {
         </ScrollView>
       </View>
 
-      {/* News List */}
+      {/* NEWS LIST */}
       {loading ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" color="#11B981" />

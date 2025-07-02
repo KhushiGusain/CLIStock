@@ -4,8 +4,7 @@ const PROFILE_CACHE_KEY = 'user_profile_data';
 
 class ProfileService {
   /**
-   * Get user profile data from cache
-   * @returns {Promise<Object>} User profile data
+   * @returns {Promise<Object>} USER PROFILE DATA
    */
   async getProfileData() {
     try {
@@ -15,14 +14,14 @@ class ProfileService {
         return data;
       }
       
-      // Return default profile data if no cache exists
+      // DEFAULT PROFILE DATA
       return {
         name: 'Khushi Gusain',
         email: 'gusainkhushii@gmail.com',
         profilePhoto: null,
       };
     } catch (error) {
-      console.error('❌ [Profile] Error loading profile data:', error);
+      console.error(' [Profile] Error loading profile data:', error);
       return {
         name: 'Khushi Gusain',
         email: 'gusainkhushii@gmail.com',
@@ -32,24 +31,22 @@ class ProfileService {
   }
 
   /**
-   * Save user profile data to cache
-   * @param {Object} profileData - The profile data to save
+   * @param {Object} profileData - PROFILE DATA TO SAVE
    * @returns {Promise<boolean>} Success status
    */
   async saveProfileData(profileData) {
     try {
       await AsyncStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(profileData));
-      console.log('✅ [Profile] Profile data saved successfully');
+      console.log(' [Profile] Profile data saved successfully');
       return true;
     } catch (error) {
-      console.error('❌ [Profile] Error saving profile data:', error);
+      console.error('[Profile] Error saving profile data:', error);
       return false;
     }
   }
 
   /**
-   * Update specific profile field
-   * @param {string} field - Field name to update
+   * @param {string} field - FIELD NAME TO UPDATE
    * @param {any} value - New value
    * @returns {Promise<boolean>} Success status
    */
@@ -63,14 +60,13 @@ class ProfileService {
       
       return await this.saveProfileData(updatedData);
     } catch (error) {
-      console.error('❌ [Profile] Error updating profile field:', error);
+      console.error(' [Profile] Error updating profile field:', error);
       return false;
     }
   }
 
   /**
-   * Update user name
-   * @param {string} name - New user name
+   * @param {string} name - NEW USER NAME
    * @returns {Promise<boolean>} Success status
    */
   async updateName(name) {
@@ -78,8 +74,7 @@ class ProfileService {
   }
 
   /**
-   * Update profile photo
-   * @param {string} photoUri - Photo URI
+   * @param {string} photoUri - PHOTO URI
    * @returns {Promise<boolean>} Success status
    */
   async updateProfilePhoto(photoUri) {
@@ -87,23 +82,21 @@ class ProfileService {
   }
 
   /**
-   * Clear profile data
    * @returns {Promise<boolean>} Success status
    */
   async clearProfileData() {
     try {
       await AsyncStorage.removeItem(PROFILE_CACHE_KEY);
-      console.log('🗑️ [Profile] Profile data cleared successfully');
+      console.log(' [Profile] Profile data cleared successfully');
       return true;
     } catch (error) {
-      console.error('❌ [Profile] Error clearing profile data:', error);
+      console.error(' [Profile] Error clearing profile data:', error);
       return false;
     }
   }
 
   /**
-   * Get profile info for debugging
-   * @returns {Promise<Object>} Profile information
+   * @returns {Promise<Object>} PROFILE INFO
    */
   async getProfileInfo() {
     try {
@@ -119,11 +112,11 @@ class ProfileService {
         hasPhoto: !!data.profilePhoto,
       };
     } catch (error) {
-      console.error('❌ [Profile] Error getting profile info:', error);
+      console.error(' [Profile] Error getting profile info:', error);
       return { exists: false, error: error.message };
     }
   }
 }
 
-// Export a singleton instance
+// SINGLETON INSTANCE
 export default new ProfileService(); 

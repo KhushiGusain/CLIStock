@@ -1,6 +1,9 @@
-// Stock Icon Service - Maps stock tickers to appropriate sector-based icons
+// MAPS THE STOCKS TO THE APPROPRIATE ICONS
 export const getStockIcon = (ticker) => {
   const iconMap = {
+
+// USED AI TO GENERATE THE ICONS MATCHING THE SECTOR OF THE STOCK
+
     // Technology - Devices & Hardware
     'AAPL': 'phone-portrait',
     'SAMSUNG': 'phone-portrait',
@@ -242,8 +245,7 @@ export const getStockIcon = (ticker) => {
     return iconMap[upperTicker];
   }
   
-  // Generate a deterministic random icon based on ticker hash
-  // This ensures the same ticker always gets the same random icon
+  // RANDOMIZE THE ICONS IF NO MATCH
   let hash = 0;
   for (let i = 0; i < upperTicker.length; i++) {
     const char = upperTicker.charCodeAt(i);

@@ -5,11 +5,10 @@ const fetch = require('node-fetch');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Enable CORS for React Native app
 app.use(cors());
 app.use(express.json());
 
-// Cache configuration
+// CACHE CONFIGURATION
 let cachedData = {
   topGainersLosers: null,
   companyOverviews: new Map(),
@@ -26,20 +25,19 @@ let lastFetch = {
   newsSentiment: 0,
 };
 
-const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
-const COMPANY_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours (company info doesn't change often)
-const QUOTE_CACHE_DURATION = 1 * 60 * 1000; // 1 minute for quotes
-const TIMESERIES_CACHE_DURATION = 15 * 60 * 1000; // 15 minutes for chart data
-const NEWS_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours for news
+const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6HR
+const COMPANY_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24HRS as company info doesn't change often so we can cache it for a day
+const QUOTE_CACHE_DURATION = 1 * 60 * 1000; // 1MINUTE for quotes
+const TIMESERIES_CACHE_DURATION = 15 * 60 * 1000; // 15MINUTES for chart data
+const NEWS_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6HOURS for news
 
-const ALPHA_VANTAGE_API_KEY = '29RSVT4XO457J6NZ'; // You can also use process.env.ALPHA_VANTAGE_API_KEY
+const ALPHA_VANTAGE_API_KEY = '29RSVT4XO457J6NZ'; // we can use .env file to store the api key but for easier presentation we are using it here
 
-// Utility function to check if cache is valid
 function isCacheValid(timestamp, duration) {
   return timestamp && (Date.now() - timestamp < duration);
 }
 
-// Top Gainers/Losers endpoint
+// Top G/L endpoint
 app.get('/api/stocks/top-gainers-losers', async (req, res) => {
   console.log('📊 [Backend] Request for Top Gainers/Losers');
   
@@ -57,7 +55,7 @@ app.get('/api/stocks/top-gainers-losers', async (req, res) => {
       
       const data = await response.json();
       
-      // Check if we got valid data
+      // VALIDATION
       if (data.top_gainers && data.top_losers) {
         cachedData.topGainersLosers = data;
         lastFetch.topGainersLosers = now;
@@ -69,7 +67,7 @@ app.get('/api/stocks/top-gainers-losers', async (req, res) => {
     } catch (error) {
       console.error('❌ [Backend] Error fetching from Alpha Vantage:', error);
       
-      // If we have cached data, serve it even if expired
+      // IF CACHED DATA, SERVE IT EVEN IF EXPIRED
       if (cachedData.topGainersLosers) {
         console.log('📱 [Backend] Serving stale cached data due to API error');
         return res.json(cachedData.topGainersLosers);
@@ -84,7 +82,7 @@ app.get('/api/stocks/top-gainers-losers', async (req, res) => {
   res.json(cachedData.topGainersLosers);
 });
 
-// Company Overview endpoint
+// COMPANY DATA ENDPOINT
 app.get('/api/stocks/overview/:symbol', async (req, res) => {
   const symbol = req.params.symbol.toUpperCase();
   console.log(`📊 [Backend] Request for company overview: ${symbol}`);
@@ -103,7 +101,7 @@ app.get('/api/stocks/overview/:symbol', async (req, res) => {
       
       const data = await response.json();
       
-      // Check if we got valid data
+      // VALIDATION
       if (data.Symbol) {
         cachedData.companyOverviews.set(symbol, data);
         lastFetch.companyOverviews.set(symbol, now);
@@ -123,7 +121,7 @@ app.get('/api/stocks/overview/:symbol', async (req, res) => {
   res.json(cachedData.companyOverviews.get(symbol));
 });
 
-// Quote endpoint
+// PRICE ENDPOINT
 app.get('/api/stocks/quote/:symbol', async (req, res) => {
   const symbol = req.params.symbol.toUpperCase();
   console.log(`📊 [Backend] Request for quote: ${symbol}`);
@@ -162,13 +160,13 @@ app.get('/api/stocks/quote/:symbol', async (req, res) => {
   res.json(cachedData.quotes.get(symbol));
 });
 
-// Time Series endpoint (for charts)
+// CHART ENDPOINT
 app.get('/api/stocks/timeseries/:function/:symbol', async (req, res) => {
   const { function: timeFunction, symbol } = req.params;
   const { interval } = req.query;
   const symbolUpper = symbol.toUpperCase();
   
-  // Create cache key
+  // CACHE KEY
   const cacheKey = interval ? `${timeFunction}_${symbolUpper}_${interval}` : `${timeFunction}_${symbolUpper}`;
   
   console.log(`📊 [Backend] Request for time series: ${cacheKey}`);
@@ -192,7 +190,7 @@ app.get('/api/stocks/timeseries/:function/:symbol', async (req, res) => {
       
       const data = await response.json();
       
-      // Check if we got valid data (different functions have different data structures)
+      // VALIDATION
       const hasValidData = data['Meta Data'] || data['Time Series (Daily)'] || data['Weekly Time Series'] || data['Monthly Time Series'] || data[`Time Series (${interval})`];
       
       if (hasValidData) {
@@ -214,7 +212,7 @@ app.get('/api/stocks/timeseries/:function/:symbol', async (req, res) => {
   res.json(cachedData.timeSeries.get(cacheKey));
 });
 
-// News & Sentiment endpoint
+// NEWS & SENTIMENT ENDPOINT
 app.get('/api/stocks/news-sentiment', async (req, res) => {
   console.log('📊 [Backend] Request for News & Sentiment');
   
@@ -225,7 +223,7 @@ app.get('/api/stocks/news-sentiment', async (req, res) => {
     console.log('🌐 [Backend] Fetching fresh news data from Alpha Vantage...');
     
     try {
-      // Build query parameters for Alpha Vantage API
+      // QUERY PARAMETERS
       let url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${ALPHA_VANTAGE_API_KEY}`;
       if (tickers) url += `&tickers=${tickers}`;
       if (topics) url += `&topics=${topics}`;
@@ -242,9 +240,9 @@ app.get('/api/stocks/news-sentiment', async (req, res) => {
       
       const data = await response.json();
       
-      // Check if we got valid data
+      // VALIDATION
       if (data.feed) {
-        // Normalize the response structure to match our frontend expectations
+        // NORMALIZE THE RESPONSE STRUCTURE TO MATCH OUR FRONTEND EXPECTATIONS
         const normalizedData = {
           items: data.feed, // Convert 'feed' to 'items'
           sentiment_score_definition: data.sentiment_score_definition,
@@ -257,24 +255,20 @@ app.get('/api/stocks/news-sentiment', async (req, res) => {
         console.log(`📊 [Backend] Cached ${data.feed.length} news articles`);
       } else {
         console.error('⚠️ [Backend] Invalid news data from Alpha Vantage:', data);
-        // Return cached data if available, otherwise return mock data
         if (cachedData.newsSentiment) {
           console.log('📱 [Backend] Serving stale cached news data');
           return res.json(cachedData.newsSentiment);
         }
-        // Return mock data for development
         return res.json(getMockNewsData());
       }
     } catch (error) {
       console.error('❌ [Backend] Error fetching news from Alpha Vantage:', error);
       
-      // If we have cached data, serve it even if expired
       if (cachedData.newsSentiment) {
         console.log('📱 [Backend] Serving stale cached news data due to API error');
         return res.json(cachedData.newsSentiment);
       }
       
-      // Return mock data for development
       console.log('📱 [Backend] Serving mock news data due to API error');
       return res.json(getMockNewsData());
     }
@@ -285,7 +279,7 @@ app.get('/api/stocks/news-sentiment', async (req, res) => {
   res.json(cachedData.newsSentiment);
 });
 
-// Helper function to generate mock news data
+  // MOCK NEWS DATA copied from API RESPONSE JSON
 function getMockNewsData() {
   return {
     items: [
@@ -395,7 +389,7 @@ function getMockNewsData() {
   };
 }
 
-// Symbol Search endpoint
+// SYMBOL SEARCH ENDPOINT
 app.get('/api/stocks/search', async (req, res) => {
   const { keywords } = req.query;
   
@@ -422,7 +416,7 @@ app.get('/api/stocks/search', async (req, res) => {
   }
 });
 
-// Health check endpoint
+// HEALTH CHECK ENDPOINT
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -443,7 +437,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Start server
+// START SERVER LOGS FOR EASY DEBUGGING
 app.listen(PORT, () => {
   console.log(`🚀 [Backend] Stock API server running on port ${PORT}`);
   console.log(`📊 [Backend] Health check: http://localhost:${PORT}/api/health`);

@@ -3,8 +3,7 @@ apply plugin: "com.android.application"
 import com.android.build.OutputFile
 
 project.ext.react = [
-    enableHermes: true,  // or false if you don't want Hermes
-]
+    enableHermes: true, 
 
 apply from: "../../node_modules/react-native/react.gradle"
 
@@ -12,7 +11,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.yourapp"  // change this to your actual package name
+        applicationId "com.yourapp"  
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -30,8 +29,8 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"
-    // Add other dependencies here if needed
+    
 }
 
-// ⬇️ This line enables font linking for react-native-vector-icons
+// for react icons
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

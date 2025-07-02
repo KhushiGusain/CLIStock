@@ -35,7 +35,7 @@ const UP_ARROW = require('../assets/vectors/upArrow.png');
 const DOWN_ARROW = require('../assets/vectors/downArrow.png');
 const screenWidth = Dimensions.get('window').width;
 
-// Helper functions for sample data (fallback when API fails)
+// SAMPLE DATA FALLBACK WHEN API FAILS
 const getSamplePrice = (symbol) => {
   const base = symbol.charCodeAt(0) + symbol.charCodeAt(1);
   return (50 + (base % 400) + Math.random() * 50).toFixed(2);
@@ -54,17 +54,16 @@ const getSampleChangePercent = (symbol) => {
 };
 
 function StockInfoCard({ stock, quote, loadingQuote, theme }) {
-  // Extract current price and change from quote data or fallback to stock data
+          // EXTRACT CURRENT PRICE AND CHANGE FROM QUOTE DATA OR FALLBACK TO STOCK DATA
   const currentPrice = quote?.['05. price'] || stock?.price || getSamplePrice(stock?.symbol || 'DEMO');
   const change = quote?.['09. change'] || stock?.change || getSampleChange(stock?.symbol || 'DEMO');
   const changePercent = quote?.['10. change percent'] || stock?.change_percentage || getSampleChangePercent(stock?.symbol || 'DEMO');
   
-  // Clean up the change percent to remove parentheses and ensure proper formatting
   const cleanChangePercent = typeof changePercent === 'string' 
     ? changePercent.replace(/[()]/g, '') 
     : changePercent;
   
-  // Determine if the change is positive
+  // DETERMINE IF THE CHANGE IS POSITIVE
   const isPositive = parseFloat(change) >= 0;
   const formattedChange = isPositive ? `+${Math.abs(parseFloat(change)).toFixed(2)}` : parseFloat(change).toFixed(2);
   const formattedPercent = isPositive ? `+${cleanChangePercent}` : cleanChangePercent;
@@ -109,28 +108,28 @@ export default function DetailsScreen({ navigation, route }) {
   const { stock } = route.params || {};
   const { theme } = useTheme();
 
-  // Modal state
+    // Modal state
   const [modalVisible, setModalVisible] = useState(false);
   const { watchlists, setWatchlists } = useWatchlists();
   const [newWatchlist, setNewWatchlist] = useState('');
 
-  // Company overview state
+    // Company overview state
   const [overview, setOverview] = useState(null);
   const [loadingOverview, setLoadingOverview] = useState(true);
   const [overviewError, setOverviewError] = useState(null);
 
-  // Quote state for real-time price data
+    // Quote state for real-time price data
   const [quote, setQuote] = useState(null);
   const [loadingQuote, setLoadingQuote] = useState(true);
   const [quoteError, setQuoteError] = useState(null);
 
-  // Chart state
+    // Chart state
   const [chartData, setChartData] = useState([]);
   const [loadingChart, setLoadingChart] = useState(false);
   const [selectedTimeframe, setSelectedTimeframe] = useState('1M');
   const [selectedDataPoint, setSelectedDataPoint] = useState(null);
 
-  // Extract symbol from various possible fields
+    // EXTRACT SYMBOL FROM VARIOUS POSSIBLE FIELDS
   const symbol = stock?.symbol || stock?.ticker || stock?.['1. symbol'];
 
   const timeframes = ['1D', '1W', '1M', '1Y', '5Y'];
@@ -147,7 +146,7 @@ export default function DetailsScreen({ navigation, route }) {
       setQuoteError(null);
 
       try {
-        // Fetch both company overview and current quote in parallel
+        // FETCH BOTH COMPANY OVERVIEW AND CURRENT QUOTE IN PARALLEL
         const [overviewData, quoteData] = await Promise.all([
           getCompanyOverview(symbol),
           getQuote(symbol)
@@ -236,7 +235,7 @@ export default function DetailsScreen({ navigation, route }) {
       setChartData(chartPoints);
     } catch (error) {
       console.log(`Chart data not available for ${timeframe}:`, error);
-      // Generate sample chart data for demo
+      // GENERATE SAMPLE CHART DATA FOR DEMO
       const sampleData = Array.from({ length: 30 }, (_, i) => ({
         date: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         price: parseFloat(getSamplePrice(symbol)) + Math.sin(i * 0.2) * 10
@@ -257,7 +256,7 @@ export default function DetailsScreen({ navigation, route }) {
       });
     }
   };
-
+// Tried to use icons for sectors but it was not working so I used the default icon
   const getSectorIcon = (sector) => {
     const sectorIconMap = {
       'Technology': 'desktop-outline',
@@ -276,16 +275,13 @@ export default function DetailsScreen({ navigation, route }) {
     return sectorIconMap[sector] || 'business-outline';
   };
 
-  // Modal and watchlist functions
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  // Create enriched stock object with current price data
   const createEnrichedStock = () => {
     let enrichedStock = { ...stock };
     
     if (quote && !quote.error) {
-      // Add current price data from quote
       enrichedStock = {
         ...stock,
         currentPrice: parseFloat(quote['05. price'] || 0),
@@ -295,7 +291,6 @@ export default function DetailsScreen({ navigation, route }) {
         lastUpdated: new Date().toISOString()
       };
     } else {
-      // Add sample data as fallback
       const symbol = stock.symbol || stock.ticker;
       enrichedStock = {
         ...stock,
@@ -456,7 +451,6 @@ export default function DetailsScreen({ navigation, route }) {
                 }}
               />
               
-              {/* Selected Data Point Display */}
               {selectedDataPoint && (
                 <View style={[styles.selectedPointContainer, { backgroundColor: theme.card }]}>
                   <Text style={styles.selectedPointPrice}>
@@ -516,7 +510,6 @@ export default function DetailsScreen({ navigation, route }) {
             </View>
           )}
           
-          {/* Timeframe Selector */}
           <View style={styles.timeframeContainer}>
             {timeframes.map((timeframe) => (
               <TouchableOpacity
@@ -539,7 +532,7 @@ export default function DetailsScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Company Information */}
+          {/* COMPANY INFORMATION */}
         <View style={[styles.companyInfoContainer, { backgroundColor: theme.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>Company Information</Text>
           <View style={styles.infoRow}>
@@ -552,7 +545,7 @@ export default function DetailsScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Description */}
+        {/* DESCRIPTION */}
         {(overview?.Description || stock?.name) && (
           <View style={[styles.descriptionContainer, { backgroundColor: theme.card }]}>
             <Text style={[styles.sectionTitle, { color: theme.text }]}>Description</Text>
@@ -562,7 +555,7 @@ export default function DetailsScreen({ navigation, route }) {
           </View>
         )}
 
-        {/* Market Data Cards */}
+        {/* MARKET DATA CARDS */}
         <View style={styles.marketDataSection}>
           <View style={styles.marketDataGrid}>
             <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
@@ -601,7 +594,7 @@ export default function DetailsScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Add to Watchlist Button */}
+        {/* ADD TO WATCHLIST BUTTON */}
         <TouchableOpacity style={styles.watchlistButton} onPress={openModal}>
           <Ionicons 
             name={isInAnyWatchlist ? "bookmark" : "bookmark-outline"} 
@@ -615,7 +608,7 @@ export default function DetailsScreen({ navigation, route }) {
         </TouchableOpacity>
       </ScrollView>
       
-      {/* Watchlist Modal */}
+      {/* WATCHLIST MODAL */}
       <Modal
         visible={modalVisible}
         animationType="slide"

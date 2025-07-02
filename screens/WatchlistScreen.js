@@ -18,11 +18,10 @@ export default function WatchlistScreen() {
     navigation.navigate('WatchlistStocks', { watchlistName: watchlists[idx].name });
   };
 
-  // Show loading indicator while watchlists are being loaded
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={['top']}>
-        {/* Top bar with back button and heading */}
+        {/* TOP BAR WITH BACK BUTTON AND HEADING */}
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',

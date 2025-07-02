@@ -21,8 +21,8 @@ export default function ProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: 'Sophia Calzoni',
-    email: 'sophia.calzoni@example.com',
+    name: 'Khushi Gusain',
+    email: 'gusainkhushii@gmail.com',
     profilePhoto: null,
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +34,6 @@ export default function ProfileScreen({ navigation }) {
     loadProfileData();
   }, []);
 
-  // Refresh profile data when screen comes into focus
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadProfileData();
@@ -135,7 +134,7 @@ export default function ProfileScreen({ navigation }) {
       Alert.alert('Error', 'Email cannot be empty');
       return;
     }
-    // Basic email validation
+    // Basic email validation misc
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(editEmail.trim())) {
       Alert.alert('Error', 'Please enter a valid email address');
@@ -204,7 +203,7 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {/* Disclaimer Section */}
+        {/* DISCLAIMER SECTION */}
         <View style={{
           backgroundColor: '#FFF3CD',
           borderWidth: 1,
@@ -242,7 +241,7 @@ export default function ProfileScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Profile Photo Section */}
+        {/* PROFILE PHOTO SECTION */}
         <View style={{ alignItems: 'center', paddingVertical: 32 }}>
           <TouchableOpacity onPress={handlePhotoChange} style={{ position: 'relative' }}>
             <Image
@@ -292,9 +291,9 @@ export default function ProfileScreen({ navigation }) {
           </Text>
         </View>
 
-        {/* Profile Information */}
+        {/* PROFILE INFORMATION */}
         <View style={{ paddingHorizontal: 20 }}>
-          {/* Name Section */}
+          {/* NAME SECTION */}
           <View style={{
             backgroundColor: theme.card,
             borderRadius: 16,
@@ -380,7 +379,7 @@ export default function ProfileScreen({ navigation }) {
             )}
           </View>
 
-          {/* Email Section */}
+          {/* EMAIL SECTION */}
           <View style={{
             backgroundColor: theme.card,
             borderRadius: 16,
@@ -469,7 +468,7 @@ export default function ProfileScreen({ navigation }) {
             )}
           </View>
 
-          {/* Settings Section */}
+          {/* SETTINGS SECTION */}
           <View style={{
             backgroundColor: theme.card,
             borderRadius: 16,
@@ -546,7 +545,7 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* App Info Section */}
+          {/* APP INFO SECTION */}
           <View style={{
             backgroundColor: theme.card,
             borderRadius: 16,

@@ -17,7 +17,7 @@ export default function TopGainersScreen({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Check if we have cached data first
+        // check if we have cached any data before
         const cachedData = await cacheService.getCachedData();
         if (cachedData) {
           // Use cached data immediately, no loading state
@@ -27,7 +27,7 @@ export default function TopGainersScreen({ navigation }) {
           return;
         }
 
-        // No cached data, show loading and fetch fresh data
+        // fetch fresh data then
         setLoading(true);
         setError(null);
         const data = await cacheService.getTopGainersLosers();
@@ -62,9 +62,9 @@ export default function TopGainersScreen({ navigation }) {
         borderColor: theme.mode === 'dark' ? theme.border : 'transparent',
       }}
     >
-      {/* Logo and name row */}
+      {/* LOGO AND NAME ROW */}
       <View style={{ flexDirection: 'row', alignItems: 'center', width: 142, height: 40, marginBottom: 6 }}>
-        {/* Sector-specific icon */}
+        {/* SECTOR-SPECIFIC ICON */}
         <View style={{ 
           width: 54, 
           height: 46, 
@@ -98,7 +98,7 @@ export default function TopGainersScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={['top']}>
-      {/* Top bar with back arrow and heading */}
+      {/* TOP BAR WITH BACK ARROW AND HEADING */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 16, minHeight: 56 }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 4, justifyContent: 'center', alignItems: 'center' }}>
           <Image source={BACK_ARROW} style={{ width: 44, height: 44 }} />
@@ -107,7 +107,7 @@ export default function TopGainersScreen({ navigation }) {
           <Text style={{ fontSize: 20, fontWeight: '600', color: theme.text }}>Top Gainers</Text>
         </View>
       </View>
-      {/* Gainers grid */}
+      {/* GAINERS GRID */}
       {loading ? (
         <ActivityIndicator size="large" color={theme.accent} style={{ marginTop: 40 }} />
       ) : error ? (

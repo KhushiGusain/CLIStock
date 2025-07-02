@@ -23,7 +23,7 @@ export default function WatchlistStocksScreen({ route }) {
   const [stocksWithPrices, setStocksWithPrices] = useState([]);
   const [loadingPrices, setLoadingPrices] = useState(false);
 
-  // Fetch current prices for all stocks in the watchlist
+    // Fetch current prices for all stocks in the watchlist
   const fetchStockPrices = async () => {
     if (stocks.length === 0) {
       setStocksWithPrices([]);
@@ -41,7 +41,6 @@ export default function WatchlistStocksScreen({ route }) {
         let enrichedStock = { ...stock };
         
         if (quote && !quote.error) {
-          // Extract price data from Alpha Vantage quote
           const currentPrice = parseFloat(quote['05. price'] || 0);
           const change = parseFloat(quote['09. change'] || 0);
           const changePercent = quote['10. change percent']?.replace('%', '') || '0';
@@ -54,7 +53,6 @@ export default function WatchlistStocksScreen({ route }) {
             hasRealData: true
           };
         } else {
-          // Fallback to sample data if API fails
           const samplePrice = getSamplePrice(symbol);
           const sampleChange = getSampleChange(symbol);
           const sampleChangePercent = getSampleChangePercent(symbol);
@@ -71,7 +69,6 @@ export default function WatchlistStocksScreen({ route }) {
         enrichedStocks.push(enrichedStock);
       } catch (error) {
         console.error(`Error fetching price for ${stock.symbol || stock.ticker}:`, error);
-        // Add stock with fallback data
         const symbol = stock.symbol || stock.ticker;
         enrichedStocks.push({
           ...stock,
@@ -87,7 +84,7 @@ export default function WatchlistStocksScreen({ route }) {
     setLoadingPrices(false);
   };
 
-  // Sample data functions (fallback when API fails)
+  // Sample data if api failes
   const getSamplePrice = (symbol) => {
     const base = symbol.charCodeAt(0) + symbol.charCodeAt(1);
     return (50 + (base % 400) + Math.random() * 50).toFixed(2);
@@ -103,7 +100,6 @@ export default function WatchlistStocksScreen({ route }) {
     return (Math.random() * 5 - 2.5).toFixed(2) + '%';
   };
 
-  // Fetch prices when component mounts or stocks change
   useEffect(() => {
     if (!isLoading && stocks.length > 0) {
       fetchStockPrices();
@@ -134,7 +130,6 @@ export default function WatchlistStocksScreen({ route }) {
     fetchStockPrices();
   };
 
-  // Show loading indicator while watchlists are being loaded
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={['top']}>
@@ -289,7 +284,7 @@ export default function WatchlistStocksScreen({ route }) {
                 flexDirection: 'row', 
                 alignItems: 'center', 
                 marginBottom: 12,
-                marginTop: 8, // Add space for delete button
+                marginTop: 8, 
               }}>
                 {/* Icon */}
                 <View style={{ 

@@ -17,7 +17,7 @@ export default function TopLosersScreen({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Check if we have cached data first
+        // check if we have cached any data before
         const cachedData = await cacheService.getCachedData();
         if (cachedData) {
           // Use cached data immediately, no loading state
@@ -27,7 +27,7 @@ export default function TopLosersScreen({ navigation }) {
           return;
         }
 
-        // No cached data, show loading and fetch fresh data
+        // fetch fresh data then
         setLoading(true);
         setError(null);
         const data = await cacheService.getTopGainersLosers();

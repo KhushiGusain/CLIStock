@@ -46,7 +46,6 @@ export default function HomeScreen({ navigation }) {
     loadUserProfile();
   }, []);
 
-  // Add focus listener to refresh profile data when returning from Profile screen
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadUserProfile();
@@ -64,7 +63,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  // Search handler
+  // SEARCH HANDLER
   const handleSearch = async (text) => {
     setSearchText(text);
     if (text.length < 2) {
@@ -113,12 +112,12 @@ export default function HomeScreen({ navigation }) {
         elevation: 1, 
         borderWidth: theme.mode === 'dark' ? 1 : 0, 
         borderColor: theme.mode === 'dark' ? theme.border : 'transparent',
-        minHeight: 140, // Increased minimum height for better spacing
+        minHeight: 140, 
       }}
     >
-      {/* Logo and name row */}
+      {/* LOGO AND NAME ROW */}
       <View style={{ flexDirection: 'row', alignItems: 'center', width: 142, height: 40, marginBottom: 12 }}>
-        {/* Icon instead of text initial */}
+        {/* ICON INSTEAD OF TEXT INITIAL */}
         <View style={{ 
           width: 54, 
           height: 46, 
@@ -143,12 +142,10 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
       
-      {/* Price section with increased spacing */}
       <View style={{ marginBottom: 12 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', color: theme.price, lineHeight: 20, letterSpacing: 0.5 }}>{item.price ? `$${item.price}` : 'N/A'}</Text>
       </View>
       
-      {/* Percentage change section */}
       <View style={{ backgroundColor: isLoser ? theme.losersPercentageBg : theme.gainersPercentageBg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ fontSize: 12, color: isLoser ? '#F75555' : '#11B981', fontWeight: '600', marginRight: 2 }}>{item.change_percentage}</Text>
         <Image source={isLoser ? DOWN_ARROW : UP_ARROW} style={{ width: 20, height: 20, tintColor: isLoser ? '#F75555' : '#11B981' }} />
@@ -158,7 +155,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background, paddingBottom: 16 }} edges={['top']}>
-      {/* Top section */}
+      {/* TOP SECTION */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, height: 60 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image source={AVATAR} style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }} />
@@ -200,9 +197,9 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-      {/* Enhanced Search Section */}
+      {/* ENHANCED SEARCH SECTION */}
       <View style={{ alignItems: 'center', marginBottom: 16, marginTop: 14, paddingHorizontal: 20 }}>
-        {/* Search Input Container */}
+        {/* SEARCH INPUT CONTAINER */}
         <View style={{ 
           flexDirection: 'row', 
           alignItems: 'center', 
@@ -269,7 +266,7 @@ export default function HomeScreen({ navigation }) {
           )}
         </View>
 
-        {/* Enhanced Dropdown Results */}
+        {/* ENHANCED DROPDOWN RESULTS */}
         {showDropdown && (
           <View style={{ 
             position: 'absolute', 
@@ -291,7 +288,7 @@ export default function HomeScreen({ navigation }) {
             elevation: 12,
             overflow: 'hidden'
           }}>
-            {/* Search Header */}
+            {/* SEARCH HEADER */}
             <View style={{ 
               paddingHorizontal: 18, 
               paddingVertical: 12, 
@@ -389,7 +386,7 @@ export default function HomeScreen({ navigation }) {
                         />
                       </View>
                       
-                      {/* Stock Info */}
+                      {/* STOCK INFO */}
                       <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <Text style={{ 
@@ -443,9 +440,9 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
       </View>
-      {/* Top Gainers section */}
+      {/* TOP GAINERS SECTION */}
       <View style={{ marginTop: 8 }}>
-        {/* Header */}
+        {/* HEADER */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginTop: 5, marginBottom: 16 }}>
           <Text style={{ fontSize: 20, fontWeight: '600', color: theme.text }}>Top Gainers</Text>
           <TouchableOpacity onPress={() => navigation.navigate('TopGainers')}>
@@ -464,9 +461,9 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
       </View>
-      {/* Top Losers section */}
+      {/* TOP LOSERS SECTION */}
       <View style={{ marginTop: 24 }}>
-        {/* Header */}
+        {/* HEADER */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginTop: 10, marginBottom: 16 }}>
           <Text style={{ fontSize: 20, fontWeight: '600', color: theme.text }}>Top Losers</Text>
           <TouchableOpacity onPress={() => navigation.navigate('TopLosers')}>
