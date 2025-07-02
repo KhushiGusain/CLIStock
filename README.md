@@ -29,20 +29,21 @@ A comprehensive React Native mobile application for tracking stock prices, marke
 - **API Caching**: Intelligent caching system to reduce API calls
 - **Backend Proxy**: Custom backend to prevent API exhaustion
 - **Efficient Data Management**: Optimized data fetching and storage
-**Landing / Home Page**
-![image](https://github.com/user-attachments/assets/8591958e-895c-4395-9323-d5ae8ac1668b)
+**Landing / Home Page**  
+<img src="https://github.com/user-attachments/assets/8591958e-895c-4395-9323-d5ae8ac1668b" width="600"/>
 
-**All Watchlists**
-![image](https://github.com/user-attachments/assets/98c6be03-f1f2-4bbb-bd7f-895db6ce8f53)
+**All Watchlists**  
+<img src="https://github.com/user-attachments/assets/98c6be03-f1f2-4bbb-bd7f-895db6ce8f53" width="600"/>
 
-**Inside My Dream Watchlist**
-![image](https://github.com/user-attachments/assets/b041f65c-2d1a-43de-a0f2-16130d4a1585)
+**Inside My Dream Watchlist**  
+<img src="https://github.com/user-attachments/assets/b041f65c-2d1a-43de-a0f2-16130d4a1585" width="600"/>
 
-**Lets Check How Appl.. is doing**
-![image](https://github.com/user-attachments/assets/89b14de4-198c-42ca-8062-c1e751180030)![image](https://github.com/user-attachments/assets/d9215bba-7aa0-4eab-9fe9-deb18c285e4c)
+**Let's Check How AAPL is Doing**  
+<img src="https://github.com/user-attachments/assets/89b14de4-198c-42ca-8062-c1e751180030" width="600"/>
+<img src="https://github.com/user-attachments/assets/d9215bba-7aa0-4eab-9fe9-deb18c285e4c" width="600"/>
 
-**Hows the Market Doing today**
-![image](https://github.com/user-attachments/assets/8c6f666a-6499-4d4d-9883-a07ef86dc2fb)
+**How’s the Market Doing Today**  
+<img src="https://github.com/user-attachments/assets/8c6f666a-6499-4d4d-9883-a07ef86dc2fb" width="600"/>
 
 **Top Gainers Today..**
 
