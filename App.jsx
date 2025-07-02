@@ -7,7 +7,7 @@ import { WatchlistProvider } from './WatchlistContext';
 import { ThemeProvider } from './ThemeContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// Import screens
+// 
 import HomeScreen from './screens/HomeScreen';
 import WatchlistScreen from './screens/WatchlistScreen';
 import TopGainersScreen from './screens/TopGainersScreen';
@@ -15,6 +15,7 @@ import TopLosersScreen from './screens/TopLosersScreen';
 import NewsScreen from './screens/NewsScreen';
 import DetailsScreen from './screens/DetailsScreen';
 import WatchlistStocksScreen from './screens/WatchlistStocksScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 import ActiveLine from './assets/vectors/ActiveLine.png';
 import HomeFillIcon from './assets/vectors/home-fill.png';
@@ -34,6 +35,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="TopLosers" component={TopLosersScreen} />
       <HomeStack.Screen name="Details" component={DetailsScreen} />
       <HomeStack.Screen name="WatchlistStocks" component={WatchlistStocksScreen} />
+      <HomeStack.Screen name="Profile" component={ProfileScreen} />
     </HomeStack.Navigator>
   );
 }

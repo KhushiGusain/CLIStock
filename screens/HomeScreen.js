@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../ThemeContext';
 import { getTopGainersLosers, searchSymbols } from '../services/alphaVantage';
 import { getStockIcon } from '../services/stockIconService';
+import profileService from '../services/profileService';
 
 const AVATAR = require('../assets/vectors/avatar.png');
 const SEARCH = require('../assets/vectors/search.png');
@@ -19,6 +20,7 @@ export default function HomeScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [gainers, setGainers] = useState([]);
   const [losers, setLosers] = useState([]);
+  const [userName, setUserName] = useState('Sophia Calzoni');
   // Search state
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -41,7 +43,26 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     fetchData();
+    loadUserProfile();
   }, []);
+
+  // Add focus listener to refresh profile data when returning from Profile screen
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadUserProfile();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const loadUserProfile = async () => {
+    try {
+      const profileData = await profileService.getProfileData();
+      setUserName(profileData.name);
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
 
   // Search handler
   const handleSearch = async (text) => {
@@ -80,10 +101,23 @@ export default function HomeScreen({ navigation }) {
     <TouchableOpacity
       key={item.ticker + idx}
       onPress={() => navigation.navigate('Details', { stock: item })}
-      style={{ width: '48%', backgroundColor: theme.card, borderRadius: 12, padding: 14, marginBottom: idx < 2 ? 12 : 0, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 4, elevation: 1, borderWidth: theme.mode === 'dark' ? 1 : 0, borderColor: theme.mode === 'dark' ? theme.border : 'transparent' }}
+      style={{ 
+        width: '48%', 
+        backgroundColor: theme.card, 
+        borderRadius: 12, 
+        padding: 16, 
+        marginBottom: idx < 2 ? 12 : 0, 
+        shadowColor: '#000', 
+        shadowOpacity: 0.03, 
+        shadowRadius: 4, 
+        elevation: 1, 
+        borderWidth: theme.mode === 'dark' ? 1 : 0, 
+        borderColor: theme.mode === 'dark' ? theme.border : 'transparent',
+        minHeight: 140, // Increased minimum height for better spacing
+      }}
     >
       {/* Logo and name row */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', width: 142, height: 40, marginBottom: 6 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', width: 142, height: 40, marginBottom: 12 }}>
         {/* Icon instead of text initial */}
         <View style={{ 
           width: 54, 
@@ -108,7 +142,13 @@ export default function HomeScreen({ navigation }) {
           <Text style={{ fontSize: 12, lineHeight: 16, letterSpacing: 0.3, color: theme.secondaryText, marginTop: 1 }} numberOfLines={1}>{item.name}</Text>
         </View>
       </View>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: theme.price, marginBottom: 4, lineHeight: 20, letterSpacing: 0.5 }}>{item.price ? `$${item.price}` : 'N/A'}</Text>
+      
+      {/* Price section with increased spacing */}
+      <View style={{ marginBottom: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', color: theme.price, lineHeight: 20, letterSpacing: 0.5 }}>{item.price ? `$${item.price}` : 'N/A'}</Text>
+      </View>
+      
+      {/* Percentage change section */}
       <View style={{ backgroundColor: isLoser ? theme.losersPercentageBg : theme.gainersPercentageBg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ fontSize: 12, color: isLoser ? '#F75555' : '#11B981', fontWeight: '600', marginRight: 2 }}>{item.change_percentage}</Text>
         <Image source={isLoser ? DOWN_ARROW : UP_ARROW} style={{ width: 20, height: 20, tintColor: isLoser ? '#F75555' : '#11B981' }} />
@@ -124,10 +164,27 @@ export default function HomeScreen({ navigation }) {
           <Image source={AVATAR} style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }} />
           <View>
             <Text style={{ color: theme.secondaryText, fontSize: 14, fontFamily: 'NotoSans-Regular' }}>Welcome back</Text>
-            <Text style={{ color: theme.text, fontSize: 18, fontWeight: 'bold', fontFamily: 'NotoSans_Condensed-Bold' }}>Sophia Calzoni</Text>
+            <Text style={{ color: theme.text, fontSize: 18, fontWeight: 'bold', fontFamily: 'NotoSans_Condensed-Bold' }}>{userName}</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Profile')} 
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: theme.border,
+              backgroundColor: theme.card,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 6,
+              marginRight: 8,
+            }}
+          >
+            <Ionicons name="settings-outline" size={24} color={theme.text} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={toggleTheme} style={{
             width: 42,
             height: 42,
