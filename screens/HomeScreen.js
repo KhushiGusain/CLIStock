@@ -1,0 +1,433 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useTheme } from '../ThemeContext';
+import { getTopGainersLosers, searchSymbols } from '../services/alphaVantage';
+import { getStockIcon } from '../services/stockIconService';
+
+const AVATAR = require('../assets/vectors/avatar.png');
+const SEARCH = require('../assets/vectors/search.png');
+const SUN = require('../assets/vectors/sun.png');
+const MOON = require('../assets/vectors/moon.png');
+const UP_ARROW = require('../assets/vectors/upArrow.png');
+const DOWN_ARROW = require('../assets/vectors/downArrow.png');
+
+export default function HomeScreen({ navigation }) {
+  const { theme, toggleTheme } = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [gainers, setGainers] = useState([]);
+  const [losers, setLosers] = useState([]);
+  // Search state
+  const [searchText, setSearchText] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getTopGainersLosers();
+      setGainers(data.top_gainers?.slice(0, 4) || []);
+      setLosers(data.top_losers?.slice(0, 4) || []);
+    } catch (err) {
+      setError('Failed to load data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Search handler
+  const handleSearch = async (text) => {
+    setSearchText(text);
+    if (text.length < 2) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    setSearchLoading(true);
+    setShowDropdown(true);
+    try {
+      const results = await searchSymbols(text);
+      setSearchResults(results);
+    } catch (e) {
+      setSearchResults([]);
+    }
+    setSearchLoading(false);
+  };
+
+  const handleSelectResult = (item) => {
+    setShowDropdown(false);
+    setSearchText('');
+    setSearchResults([]);
+    navigation.navigate('Details', {
+      stock: {
+        ticker: item['1. symbol'],
+        name: item['2. name'],
+        region: item['4. region'],
+        currency: item['8. currency'],
+      },
+    });
+  };
+
+  const renderStockCard = (item, idx, isLoser = false) => (
+    <TouchableOpacity
+      key={item.ticker + idx}
+      onPress={() => navigation.navigate('Details', { stock: item })}
+      style={{ width: '48%', backgroundColor: theme.card, borderRadius: 12, padding: 14, marginBottom: idx < 2 ? 12 : 0, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 4, elevation: 1, borderWidth: theme.mode === 'dark' ? 1 : 0, borderColor: theme.mode === 'dark' ? theme.border : 'transparent' }}
+    >
+      {/* Logo and name row */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', width: 142, height: 40, marginBottom: 6 }}>
+        {/* Icon instead of text initial */}
+        <View style={{ 
+          width: 54, 
+          height: 46, 
+          borderRadius: 12, 
+          marginRight: 6, 
+          backgroundColor: theme.iconBackground, 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          borderWidth: theme.mode === 'dark' ? 1 : 0,
+          borderColor: theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: theme.mode === 'dark' ? 0.3 : 0.1,
+          shadowRadius: 4,
+          elevation: theme.mode === 'dark' ? 4 : 2,
+        }}>
+          <Ionicons name={getStockIcon(item.ticker)} size={24} color="#11B981" />
+        </View>
+        <View>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', lineHeight: 20, letterSpacing: 0.5, color: theme.text }}>{item.ticker}</Text>
+          <Text style={{ fontSize: 12, lineHeight: 16, letterSpacing: 0.3, color: theme.secondaryText, marginTop: 1 }} numberOfLines={1}>{item.name}</Text>
+        </View>
+      </View>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', color: theme.price, marginBottom: 4, lineHeight: 20, letterSpacing: 0.5 }}>{item.price ? `$${item.price}` : 'N/A'}</Text>
+      <View style={{ backgroundColor: isLoser ? theme.losersPercentageBg : theme.gainersPercentageBg, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ fontSize: 12, color: isLoser ? '#F75555' : '#11B981', fontWeight: '600', marginRight: 2 }}>{item.change_percentage}</Text>
+        <Image source={isLoser ? DOWN_ARROW : UP_ARROW} style={{ width: 20, height: 20, tintColor: isLoser ? '#F75555' : '#11B981' }} />
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background, paddingBottom: 16 }} edges={['top']}>
+      {/* Top section */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, height: 60 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image source={AVATAR} style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }} />
+          <View>
+            <Text style={{ color: theme.secondaryText, fontSize: 14, fontFamily: 'NotoSans-Regular' }}>Welcome back</Text>
+            <Text style={{ color: theme.text, fontSize: 18, fontWeight: 'bold', fontFamily: 'NotoSans_Condensed-Bold' }}>Sophia Calzoni</Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={toggleTheme} style={{
+            width: 42,
+            height: 42,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: theme.border,
+            backgroundColor: theme.card,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 6,
+          }}>
+            <Image source={theme.mode === 'light' ? MOON : SUN} style={{ width: 28, height: 28 }} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* Enhanced Search Section */}
+      <View style={{ alignItems: 'center', marginBottom: 16, marginTop: 14, paddingHorizontal: 20 }}>
+        {/* Search Input Container */}
+        <View style={{ 
+          flexDirection: 'row', 
+          alignItems: 'center', 
+          width: '100%',
+          maxWidth: 400,
+          height: 52, 
+          borderRadius: 16, 
+          borderWidth: showDropdown ? 2 : 1.5, 
+          borderColor: showDropdown ? '#11B981' : theme.border, 
+          backgroundColor: theme.input, 
+          paddingLeft: 18,
+          paddingRight: 18,
+          shadowColor: '#000',
+          shadowOpacity: showDropdown ? 0.12 : 0.04,
+          shadowRadius: showDropdown ? 12 : 4,
+          shadowOffset: { width: 0, height: showDropdown ? 4 : 2 },
+          elevation: showDropdown ? 8 : 2,
+        }}>
+          <Ionicons 
+            name="search" 
+            size={22} 
+            color={showDropdown ? '#11B981' : theme.secondaryText} 
+            style={{ marginRight: 12 }}
+          />
+          <TextInput
+            placeholder="Search stocks, companies..."
+            placeholderTextColor={theme.secondaryText}
+            style={{ 
+              flex: 1, 
+              height: 50, 
+              fontSize: 16, 
+              fontWeight: '500',
+              borderWidth: 0, 
+              paddingTop: 0, 
+              paddingBottom: 0, 
+              paddingLeft: 0, 
+              backgroundColor: 'transparent', 
+              color: theme.text 
+            }}
+            value={searchText}
+            onChangeText={handleSearch}
+            onFocus={() => { if (searchText.length > 1) setShowDropdown(true); }}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+            returnKeyType="search"
+            autoCapitalize="characters"
+            autoCorrect={false}
+          />
+          {searchText.length > 0 && (
+            <TouchableOpacity 
+              onPress={() => {
+                setSearchText('');
+                setSearchResults([]);
+                setShowDropdown(false);
+              }}
+              style={{ 
+                padding: 4, 
+                borderRadius: 12, 
+                backgroundColor: theme.secondaryText + '20',
+                marginLeft: 8
+              }}
+            >
+              <Ionicons name="close" size={16} color={theme.secondaryText} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Enhanced Dropdown Results */}
+        {showDropdown && (
+          <View style={{ 
+            position: 'absolute', 
+            top: 60, 
+            left: 20,
+            right: 20,
+            width: '100%',
+            maxWidth: 400,
+            backgroundColor: theme.card, 
+            borderRadius: 16, 
+            borderWidth: 1, 
+            borderColor: theme.border + '40',
+            zIndex: 10, 
+            maxHeight: 280, 
+            shadowColor: '#000', 
+            shadowOpacity: 0.15, 
+            shadowRadius: 20, 
+            shadowOffset: { width: 0, height: 8 },
+            elevation: 12,
+            overflow: 'hidden'
+          }}>
+            {/* Search Header */}
+            <View style={{ 
+              paddingHorizontal: 18, 
+              paddingVertical: 12, 
+              borderBottomWidth: 1, 
+              borderBottomColor: theme.border + '30',
+              backgroundColor: theme.background + '90'
+            }}>
+              <Text style={{ 
+                color: theme.secondaryText, 
+                fontSize: 12, 
+                fontWeight: '600', 
+                textTransform: 'uppercase',
+                letterSpacing: 0.5
+              }}>
+                {searchLoading ? 'Searching...' : `${searchResults.length} Results`}
+              </Text>
+            </View>
+
+            {/* Results Content */}
+            <View style={{ backgroundColor: theme.card }}>
+              {searchLoading ? (
+                <View style={{ 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  paddingVertical: 32 
+                }}>
+                  <ActivityIndicator size="small" color="#11B981" />
+                  <Text style={{ 
+                    color: theme.secondaryText, 
+                    fontSize: 14, 
+                    marginTop: 12,
+                    fontWeight: '500'
+                  }}>
+                    Searching stocks...
+                  </Text>
+                </View>
+              ) : searchResults.length === 0 ? (
+                <View style={{ 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  paddingVertical: 32,
+                  paddingHorizontal: 20
+                }}>
+                  <Ionicons name="search-circle-outline" size={32} color={theme.secondaryText + '60'} />
+                  <Text style={{ 
+                    color: theme.secondaryText, 
+                    fontSize: 16, 
+                    textAlign: 'center', 
+                    marginTop: 12,
+                    fontWeight: '500'
+                  }}>
+                    No results found
+                  </Text>
+                  <Text style={{ 
+                    color: theme.secondaryText + '80', 
+                    fontSize: 14, 
+                    textAlign: 'center', 
+                    marginTop: 4
+                  }}>
+                    Try searching for a different stock symbol
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  data={searchResults}
+                  keyExtractor={item => item['1. symbol']}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity 
+                      onPress={() => handleSelectResult(item)} 
+                      style={{ 
+                        paddingVertical: 16, 
+                        paddingHorizontal: 18,
+                        borderBottomWidth: index < searchResults.length - 1 ? 1 : 0,
+                        borderBottomColor: theme.border + '20',
+                        backgroundColor: theme.card,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      {/* Stock Icon */}
+                      <View style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
+                        backgroundColor: '#11B981' + '15',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: 12
+                      }}>
+                        <Ionicons 
+                          name={getStockIcon(item['1. symbol'])} 
+                          size={20} 
+                          color="#11B981" 
+                        />
+                      </View>
+                      
+                      {/* Stock Info */}
+                      <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ 
+                            color: theme.text, 
+                            fontSize: 16, 
+                            fontWeight: '700',
+                            marginRight: 8
+                          }}>
+                            {item['1. symbol']}
+                          </Text>
+                          <View style={{
+                            backgroundColor: theme.secondaryText + '10',
+                            paddingHorizontal: 6,
+                            paddingVertical: 2,
+                            borderRadius: 4
+                          }}>
+                            <Text style={{ 
+                              color: theme.secondaryText, 
+                              fontSize: 10,
+                              fontWeight: '600',
+                              textTransform: 'uppercase'
+                            }}>
+                              {item['4. region'] || 'US'}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={{ 
+                          color: theme.secondaryText, 
+                          fontSize: 14,
+                          marginTop: 2,
+                          lineHeight: 18
+                        }} numberOfLines={1}>
+                          {item['2. name']}
+                        </Text>
+                      </View>
+
+                      {/* Arrow Icon */}
+                      <Ionicons 
+                        name="chevron-forward" 
+                        size={18} 
+                        color={theme.secondaryText + '60'} 
+                      />
+                    </TouchableOpacity>
+                  )}
+                  style={{ maxHeight: 200 }}
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={false}
+                />
+              )}
+            </View>
+          </View>
+        )}
+      </View>
+      {/* Top Gainers section */}
+      <View style={{ marginTop: 8 }}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginTop: 5, marginBottom: 16 }}>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: theme.text }}>Top Gainers</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('TopGainers')}>
+            <Text style={{ fontSize: 14, color: '#4F7CFE', fontWeight: '500' }}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color={theme.accent} style={{ marginVertical: 24 }} />
+        ) : error ? (
+          <Text style={{ color: 'red', textAlign: 'center', marginVertical: 24 }}>{error}</Text>
+        ) : gainers.length === 0 ? (
+          <Text style={{ color: theme.secondaryText, textAlign: 'center', marginVertical: 24 }}>No data available.</Text>
+        ) : (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 20 }}>
+            {gainers.map((item, idx) => renderStockCard(item, idx, false))}
+          </View>
+        )}
+      </View>
+      {/* Top Losers section */}
+      <View style={{ marginTop: 24 }}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginTop: 10, marginBottom: 16 }}>
+          <Text style={{ fontSize: 20, fontWeight: '600', color: theme.text }}>Top Losers</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('TopLosers')}>
+            <Text style={{ fontSize: 16, color: '#4F7CFE', fontWeight: '500' }}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color={theme.accent} style={{ marginVertical: 24 }} />
+        ) : error ? (
+          <Text style={{ color: 'red', textAlign: 'center', marginVertical: 24 }}>{error}</Text>
+        ) : losers.length === 0 ? (
+          <Text style={{ color: theme.secondaryText, textAlign: 'center', marginVertical: 24 }}>No data available.</Text>
+        ) : (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 20 }}>
+            {losers.map((item, idx) => renderStockCard(item, idx, true))}
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
+  );
+}
