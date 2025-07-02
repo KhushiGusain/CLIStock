@@ -30,7 +30,7 @@ const QUOTE_CACHE_DURATION = 1 * 60 * 1000; // 1MINUTE for quotes
 const TIMESERIES_CACHE_DURATION = 15 * 60 * 1000; // 15MINUTES for chart data
 const NEWS_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6HOURS for news
 
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || '29RSVT4XO457J6NZ';
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || '8DH00OI9P51T58L7';
 
 function isCacheValid(timestamp, duration) {
   return timestamp && (Date.now() - timestamp < duration);
