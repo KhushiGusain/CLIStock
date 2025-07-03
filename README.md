@@ -130,21 +130,40 @@ Prices are in $ as the API only provided that. Can be changed to RS by using sta
 ## 📱 App Structure
 
 ```
-CLIStock-main/
-├── screens/                 # App screens
-│   ├── HomeScreen.js       # Main dashboard
-│   ├── WatchlistScreen.js  # Watchlist management
-│   ├── TopGainersScreen.js # Top gainers list
-│   ├── TopLosersScreen.js  # Top losers list
-│   ├── NewsScreen.js       # News and sentiment
-│   ├── ProfileScreen.js    # User profile and settings
-│   ├── DetailsScreen.js    # Stock details and charts
-│   └── WatchlistStocksScreen.js
-├── services/               # API services
-│   ├── alphaVantage.js    # Stock data API calls
-│   ├── cacheService.js    # Caching utilities
-│   ├── profileService.js  # Profile data management
-│   └── stockIconService.js # Stock icon management
+CLIStock/
+├── src/                          # Main source directory
+│   ├── screens/                  # App screens
+│   │   ├── HomeScreen.js        # Main dashboard with gainers/losers
+│   │   ├── WatchlistScreen.js   # Watchlist management
+│   │   ├── TopGainersScreen.js  # Top gainers list
+│   │   ├── TopLosersScreen.js   # Top losers list
+│   │   ├── NewsScreen.js        # News and market sentiment
+│   │   ├── ProfileScreen.js     # User profile and settings
+│   │   ├── DetailsScreen.js     # Stock details and charts
+│   │   └── WatchlistStocksScreen.js # Watchlist stocks view
+│   ├── components/              # Reusable UI components
+│   │   ├── StockInfoCard.js     # Stock symbol, price, change display
+│   │   ├── StockCard.js         # Cards for gainers/losers/search
+│   │   ├── StockChart.js        # Complete chart with timeframes
+│   │   ├── MetricCard.js        # Market data metrics display
+│   │   ├── BackButton.js        # Reusable navigation back button
+│   │   ├── Loader.js            # Loading states with spinner
+│   │   ├── TimeframeButton.js   # Chart timeframe selection
+│   │   ├── ChartPlaceholder.js  # Chart loading/error states
+│   │   ├── CompanyInfoRow.js    # Label/value rows for company info
+│   │   ├── ModalInputRow.js     # Input + button for modals
+│   │   └── WatchlistItem.js     # Watchlist item rows
+│   ├── navigation/              # Navigation components
+│   │   ├── HomeStackScreen.js   # Home stack navigation
+│   │   └── WatchlistStackScreen.js # Watchlist stack navigation
+│   ├── contexts/                # React Context providers
+│   │   ├── ThemeContext.js      # Dark/Light theme management
+│   │   └── WatchlistContext.js  # Watchlist state management
+│   ├── services/                # API services and utilities
+│   │   ├── alphaVantage.js      # Alpha Vantage API calls
+│   │   ├── cacheService.js      # Data caching utilities
+│   │   ├── profileService.js    # Profile data management
+│   │   └── stockIconService.js  # Stock icon management
 ├── backend/               # Custom backend server
 │   ├── server.js          # Express server
 │   └── package.json
