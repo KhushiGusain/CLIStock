@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, Image, FlatList, ActivityIndicator } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useWatchlists } from '../WatchlistContext';
-import { useTheme } from '../ThemeContext';
+import { useWatchlists } from '../contexts/WatchlistContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const BACK_ARROW = require('../assets/vectors/backArrow.png');
 

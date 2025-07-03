@@ -18,8 +18,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LineChart } from 'react-native-chart-kit';
 import WatchlistUnfillIcon from '../assets/vectors/watchlist-unfill.png';
 import WatchlistFillIcon from '../assets/vectors/watchlist-fill.png';
-import { useWatchlists } from '../WatchlistContext';
-import { useTheme } from '../ThemeContext';
+import { useWatchlists } from '../contexts/WatchlistContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { getStockIcon } from '../services/stockIconService';
 import { 
   getCompanyOverview, 
@@ -29,6 +29,14 @@ import {
   getWeeklyData, 
   getMonthlyData 
 } from '../services/alphaVantage';
+import StockInfoCard from '../components/StockInfoCard';
+import Loader from '../components/Loader';
+import MetricCard from '../components/MetricCard';
+import BackButton from '../components/BackButton';
+import StockChart from '../components/StockChart';
+import CompanyInfoRow from '../components/CompanyInfoRow';
+import ModalInputRow from '../components/ModalInputRow';
+import WatchlistItem from '../components/WatchlistItem';
 
 const BACK_ARROW = require('../assets/vectors/backArrow.png');
 const UP_ARROW = require('../assets/vectors/upArrow.png');
@@ -52,57 +60,6 @@ const getSampleChangePercent = (symbol) => {
   const percent = ((base % 10) - 5) * 0.5 + Math.random() * 1;
   return `${percent >= 0 ? '+' : ''}${percent.toFixed(2)}%`;
 };
-
-function StockInfoCard({ stock, quote, loadingQuote, theme }) {
-          // EXTRACT CURRENT PRICE AND CHANGE FROM QUOTE DATA OR FALLBACK TO STOCK DATA
-  const currentPrice = quote?.['05. price'] || stock?.price || getSamplePrice(stock?.symbol || 'DEMO');
-  const change = quote?.['09. change'] || stock?.change || getSampleChange(stock?.symbol || 'DEMO');
-  const changePercent = quote?.['10. change percent'] || stock?.change_percentage || getSampleChangePercent(stock?.symbol || 'DEMO');
-  
-  const cleanChangePercent = typeof changePercent === 'string' 
-    ? changePercent.replace(/[()]/g, '') 
-    : changePercent;
-  
-  // DETERMINE IF THE CHANGE IS POSITIVE
-  const isPositive = parseFloat(change) >= 0;
-  const formattedChange = isPositive ? `+${Math.abs(parseFloat(change)).toFixed(2)}` : parseFloat(change).toFixed(2);
-  const formattedPercent = isPositive ? `+${cleanChangePercent}` : cleanChangePercent;
-
-  return (
-    <View style={[styles.stockInfoCard, { backgroundColor: theme.card }]}>
-      <View style={styles.stockHeader}>
-        <View style={styles.stockIcon}>
-          <Ionicons name={getStockIcon(stock?.symbol || stock?.ticker)} size={24} color="#11B981" />
-        </View>
-        <View style={styles.stockTitleSection}>
-          <Text style={[styles.stockSymbol, { color: theme.text }]}>{stock?.symbol || stock?.ticker}</Text>
-          <Text style={[styles.stockName, { color: theme.secondaryText }]}>{stock?.name}</Text>
-        </View>
-      </View>
-      
-      <View style={styles.priceSection}>
-        {loadingQuote ? (
-          <Text style={[styles.currentPrice, { color: theme.text }]}>Loading...</Text>
-        ) : (
-          <Text style={[styles.currentPrice, { color: theme.text }]}>
-            ${parseFloat(currentPrice).toFixed(2)}
-          </Text>
-        )}
-        <View style={styles.changeContainer}>
-          <View style={{ backgroundColor: isPositive ? '#E6F9F2' : '#FDEEEF', borderRadius: 7, paddingHorizontal: 8, paddingVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={[styles.changeText, { color: isPositive ? '#11B981' : '#F75555', marginRight: 4 }]}>
-              {formattedPercent}
-            </Text>
-            <Image source={isPositive ? UP_ARROW : DOWN_ARROW} style={{ width: 15, height: 15, tintColor: isPositive ? '#11B981' : '#F75555', marginRight: 4 }} />
-            <Text style={[styles.changeAmount, { color: isPositive ? '#11B981' : '#F75555' }]}>
-              ${formattedChange}
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
 
 export default function DetailsScreen({ navigation, route }) {
   const { stock } = route.params || {};
@@ -352,16 +309,11 @@ export default function DetailsScreen({ navigation, route }) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
         <View style={[styles.header, { backgroundColor: theme.card }]}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Image source={BACK_ARROW} style={{ width: 44, height: 44 }} />
-          </TouchableOpacity>
+          <BackButton onPress={() => navigation.goBack()} icon={BACK_ARROW} style={styles.backButton} />
           <Text style={[styles.headerTitle, { color: theme.text }]}>Stock Details</Text>
           <View style={{ width: 40 }} />
         </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#11B981" />
-          <Text style={[styles.loadingText, { color: theme.secondaryText }]}>Loading stock details...</Text>
-        </View>
+        <Loader message="Loading stock details..." color="#11B981" textColor={theme.secondaryText} style={styles.loadingContainer} />
       </SafeAreaView>
     );
   }
@@ -370,9 +322,7 @@ export default function DetailsScreen({ navigation, route }) {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.card }]}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Image source={BACK_ARROW} style={{ width: 44, height: 44 }} />
-        </TouchableOpacity>
+        <BackButton onPress={() => navigation.goBack()} icon={BACK_ARROW} style={styles.backButton} />
         <Text style={[styles.headerTitle, { color: theme.text }]}>{symbol} Details</Text>
         <TouchableOpacity style={styles.watchlistIconButton} onPress={handleWatchlistIconPress}>
           <Image
@@ -388,161 +338,32 @@ export default function DetailsScreen({ navigation, route }) {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Stock Info Card */}
-        <StockInfoCard stock={stock} quote={quote} loadingQuote={loadingQuote} theme={theme} />
+        <StockInfoCard stock={stock} quote={quote} loadingQuote={loadingQuote} theme={theme} styles={styles} getSamplePrice={getSamplePrice} getSampleChange={getSampleChange} getSampleChangePercent={getSampleChangePercent} />
 
         {/* Chart Section */}
         <View style={[styles.chartContainer, { backgroundColor: theme.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>Price Chart</Text>
           
-          {loadingChart ? (
-            <View style={styles.chartPlaceholder}>
-              <ActivityIndicator size="large" color="#11B981" />
-              <Text style={[styles.noChartText, { color: theme.secondaryText }]}>Loading chart...</Text>
-            </View>
-          ) : chartData.length > 0 ? (
-            <View style={styles.chartWrapper}>
-              <LineChart
-                data={{
-                  labels: chartData.map((_, index) => {
-                    if (index % Math.ceil(chartData.length / 6) === 0) {
-                      return new Date(chartData[index].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    }
-                    return '';
-                  }),
-                  datasets: [
-                    {
-                      data: chartData.map(point => point.price),
-                      color: (opacity = 1) => `rgba(17, 185, 129, 0.9)`,
-                      strokeWidth: 2,
-                      withDots: false,
-                    },
-                  ],
-                }}
-                width={screenWidth - 72}
-                height={180}
-                yAxisLabel="$"
-                yAxisSuffix=""
-                yAxisInterval={1}
-                onDataPointClick={handleDataPointClick}
-                chartConfig={{
-                  backgroundColor: theme.card,
-                  backgroundGradientFrom: theme.card,
-                  backgroundGradientTo: theme.card,
-                  decimalPlaces: 2,
-                  color: (opacity = 1) => `rgba(17, 185, 129, 0.9)`,
-                  labelColor: (opacity = 1) => `rgba(75, 85, 99, ${opacity})`,
-                  fillShadowGradient: '#11B981',
-                  fillShadowGradientOpacity: 0.1,
-                  style: {
-                    borderRadius: 10,
-                  },
-                  propsForDots: {
-                    r: '0',
-                  },
-                  propsForBackgroundLines: {
-                    strokeDasharray: '',
-                    stroke: '#E5E7EB',
-                    strokeWidth: 1,
-                  },
-                }}
-                style={{
-                  marginVertical: 8,
-                  borderRadius: 10,
-                }}
-              />
-              
-              {selectedDataPoint && (
-                <View style={[styles.selectedPointContainer, { backgroundColor: theme.card }]}>
-                  <Text style={styles.selectedPointPrice}>
-                    ${selectedDataPoint.value.toFixed(2)}
-                  </Text>
-                  <Text style={[styles.selectedPointDate, { color: theme.secondaryText }]}>
-                    {new Date(selectedDataPoint.date).toLocaleDateString('en-US', { 
-                      weekday: 'short',
-                      month: 'short', 
-                      day: 'numeric',
-                    })}
-                  </Text>
-                  <TouchableOpacity 
-                    style={styles.clearSelectionButton}
-                    onPress={() => setSelectedDataPoint(null)}
-                  >
-                    <Text style={[styles.clearSelectionText, { color: theme.secondaryText }]}>✕</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              
-              <View style={styles.chartInfo}>
-                {(() => {
-                  const startPrice = chartData[0]?.price || 0;
-                  const endPrice = chartData[chartData.length - 1]?.price || 0;
-                  const priceChange = endPrice - startPrice;
-                  const percentageChange = startPrice > 0 ? ((priceChange / startPrice) * 100) : 0;
-                  const isPositive = priceChange >= 0;
-                  
-                  return (
-                    <>
-                      <Text style={[styles.chartInfoText, { color: theme.secondaryText }]}>
-                        {selectedTimeframe} performance • {chartData.length} data points
-                      </Text>
-                      <View style={styles.performanceContainer}>
-                        <Text style={[styles.performanceText, { color: isPositive ? '#11B981' : '#F75555' }]}>
-                          {isPositive ? '+' : ''}${Math.abs(priceChange).toFixed(2)} ({isPositive ? '+' : ''}{percentageChange.toFixed(2)}%)
-                        </Text>
-                        <Text style={[styles.performanceLabel, { color: theme.secondaryText }]}>
-                          {isPositive ? 'Gained' : 'Lost'} in {selectedTimeframe}
-                        </Text>
-                      </View>
-                      <Text style={[styles.chartLatestPrice, { color: theme.text }]}>
-                        Latest: ${endPrice.toFixed(2)} on{' '}
-                        {new Date(chartData[chartData.length - 1]?.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </Text>
-                    </>
-                  );
-                })()}
-              </View>
-            </View>
-          ) : (
-            <View style={styles.chartPlaceholder}>
-              <Ionicons name="show-chart" size={48} color={theme.secondaryText} />
-              <Text style={[styles.noChartText, { color: theme.secondaryText }]}>Chart data unavailable</Text>
-              <Text style={[styles.noChartSubtext, { color: theme.secondaryText }]}>Please try again later</Text>
-            </View>
-          )}
-          
-          <View style={styles.timeframeContainer}>
-            {timeframes.map((timeframe) => (
-              <TouchableOpacity
-                key={timeframe}
-                style={[
-                  styles.timeframeButton,
-                  selectedTimeframe === timeframe && styles.timeframeButtonActive
-                ]}
-                onPress={() => setSelectedTimeframe(timeframe)}
-              >
-                <Text style={[
-                  styles.timeframeText,
-                  { color: theme.secondaryText },
-                  selectedTimeframe === timeframe && styles.timeframeTextActive
-                ]}>
-                  {timeframe}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <StockChart
+            chartData={chartData}
+            loading={loadingChart}
+            selectedTimeframe={selectedTimeframe}
+            setSelectedTimeframe={setSelectedTimeframe}
+            timeframes={timeframes}
+            theme={theme}
+            onDataPointClick={handleDataPointClick}
+            selectedDataPoint={selectedDataPoint}
+            setSelectedDataPoint={setSelectedDataPoint}
+            styles={styles}
+            screenWidth={Dimensions.get('window').width}
+          />
         </View>
 
           {/* COMPANY INFORMATION */}
         <View style={[styles.companyInfoContainer, { backgroundColor: theme.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>Company Information</Text>
-          <View style={styles.infoRow}>
-            <Text style={[styles.infoLabel, { color: theme.secondaryText }]}>Sector</Text>
-            <Text style={[styles.infoValue, { color: theme.text }]}>{overview?.Sector || 'Technology'}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={[styles.infoLabel, { color: theme.secondaryText }]}>Industry</Text>
-            <Text style={[styles.infoValue, { color: theme.text }]}>{overview?.Industry || 'Software'}</Text>
-          </View>
+          <CompanyInfoRow label="Sector" value={overview?.Sector || 'Technology'} theme={theme} />
+          <CompanyInfoRow label="Industry" value={overview?.Industry || 'Software'} theme={theme} />
         </View>
 
         {/* DESCRIPTION */}
@@ -558,39 +379,12 @@ export default function DetailsScreen({ navigation, route }) {
         {/* MARKET DATA CARDS */}
         <View style={styles.marketDataSection}>
           <View style={styles.marketDataGrid}>
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>Market Cap</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>
-                {overview?.MarketCapitalization ? `$${(Number(overview.MarketCapitalization) / 1e9).toFixed(2)}B` : 'N/A'}
-              </Text>
-            </View>
-            
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>Volume</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>
-                {quote?.['06. volume'] ? `${(Number(quote['06. volume']) / 1e6).toFixed(2)}M` : 'N/A'}
-              </Text>
-            </View>
-            
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>P/E Ratio</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>{overview?.PERatio || 'N/A'}</Text>
-            </View>
-            
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>52W High</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>${overview?.['52WeekHigh'] || 'N/A'}</Text>
-            </View>
-            
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>52W Low</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>${overview?.['52WeekLow'] || 'N/A'}</Text>
-            </View>
-            
-            <View style={[styles.metricCard, { backgroundColor: theme.card }]}>
-              <Text style={[styles.metricLabel, { color: theme.secondaryText }]}>Beta</Text>
-              <Text style={[styles.metricValue, { color: theme.text }]}>{overview?.Beta || 'N/A'}</Text>
-            </View>
+            <MetricCard label="Market Cap" value={overview?.MarketCapitalization ? `$${(Number(overview.MarketCapitalization) / 1e9).toFixed(2)}B` : 'N/A'} theme={theme} />
+            <MetricCard label="Volume" value={quote?.['06. volume'] ? `${(Number(quote['06. volume']) / 1e6).toFixed(2)}M` : 'N/A'} theme={theme} />
+            <MetricCard label="P/E Ratio" value={overview?.PERatio || 'N/A'} theme={theme} />
+            <MetricCard label="52W High" value={overview?.['52WeekHigh'] ? `$${overview['52WeekHigh']}` : 'N/A'} theme={theme} />
+            <MetricCard label="52W Low" value={overview?.['52WeekLow'] ? `$${overview['52WeekLow']}` : 'N/A'} theme={theme} />
+            <MetricCard label="Beta" value={overview?.Beta || 'N/A'} theme={theme} />
           </View>
         </View>
 
@@ -618,31 +412,22 @@ export default function DetailsScreen({ navigation, route }) {
         <Pressable style={styles.modalBackdrop} onPress={closeModal} />
         <View style={[styles.modalContainer, { backgroundColor: theme.card }]}>
           <Text style={[styles.modalTitle, { color: theme.text }]}>Add to Watchlist</Text>
-          <View style={styles.modalInputRow}>
-            <TextInput
-              placeholder="Add Watchlist Name"
-              value={newWatchlist}
-              onChangeText={setNewWatchlist}
-              style={[styles.modalInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]}
-              placeholderTextColor={theme.secondaryText}
-            />
-            <TouchableOpacity onPress={handleAddWatchlist} style={styles.modalAddButton}>
-              <Text style={styles.modalAddButtonText}>Add</Text>
-            </TouchableOpacity>
-          </View>
+          <ModalInputRow
+            value={newWatchlist}
+            onChangeText={setNewWatchlist}
+            onAdd={handleAddWatchlist}
+            theme={theme}
+          />
           <FlatList
             data={watchlists}
             keyExtractor={item => item.name}
             renderItem={({ item, index }) => (
-              <TouchableOpacity
+              <WatchlistItem
+                name={item.name}
+                selected={item.stocks?.some(s => (s.symbol || s.ticker) === (stock?.symbol || stock?.ticker))}
                 onPress={() => handleSelect(index)}
-                style={[styles.watchlistItem, { backgroundColor: theme.background }]}
-              >
-                <Text style={[styles.watchlistItemText, { color: theme.secondaryText }]}>{item.name}</Text>
-                {item.stocks?.some(s => (s.symbol || s.ticker) === (stock?.symbol || stock?.ticker)) ? (
-                  <Ionicons name="checkmark" size={22} color="#11B981" />
-                ) : null}
-              </TouchableOpacity>
+                theme={theme}
+              />
             )}
             style={{ maxHeight: 220 }}
           />
@@ -687,10 +472,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
   },
   stockInfoCard: {
     borderRadius: 12,
@@ -897,30 +678,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
-  metricCard: {
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E6F4F8',
-    width: '48%',
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  metricLabel: {
-    fontSize: 12,
-    marginBottom: 6,
-  },
-  metricValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   watchlistButton: {
     backgroundColor: '#11B981',

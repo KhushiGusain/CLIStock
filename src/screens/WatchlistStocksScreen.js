@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, Image, FlatList, Alert, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useWatchlists } from '../WatchlistContext';
-import { useTheme } from '../ThemeContext';
+import { useWatchlists } from '../contexts/WatchlistContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { getStockIcon } from '../services/stockIconService';
 import { getQuote } from '../services/alphaVantage';
 

@@ -3,8 +3,8 @@ import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-naviga
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text, Image, View, LogBox } from 'react-native';
-import { WatchlistProvider } from './WatchlistContext';
-import { ThemeProvider } from './ThemeContext';
+import { WatchlistProvider } from './src/contexts/WatchlistContext';
+import { ThemeProvider } from './src/contexts/ThemeContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Disable development error overlays
@@ -16,20 +16,23 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-import HomeScreen from './screens/HomeScreen';
-import WatchlistScreen from './screens/WatchlistScreen';
-import TopGainersScreen from './screens/TopGainersScreen';
-import TopLosersScreen from './screens/TopLosersScreen';
-import NewsScreen from './screens/NewsScreen';
-import DetailsScreen from './screens/DetailsScreen';
-import WatchlistStocksScreen from './screens/WatchlistStocksScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import WatchlistScreen from './src/screens/WatchlistScreen';
+import TopGainersScreen from './src/screens/TopGainersScreen';
+import TopLosersScreen from './src/screens/TopLosersScreen';
+import NewsScreen from './src/screens/NewsScreen';
+import DetailsScreen from './src/screens/DetailsScreen';
+import WatchlistStocksScreen from './src/screens/WatchlistStocksScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
-import ActiveLine from './assets/vectors/ActiveLine.png';
-import HomeFillIcon from './assets/vectors/home-fill.png';
-import HomeUnfillIcon from './assets/vectors/home-unfill.png';
-import WatchlistFillIcon from './assets/vectors/watchlist-fill.png';
-import WatchlistUnfillIcon from './assets/vectors/watchlist-unfill.png';
+import ActiveLine from './src/assets/vectors/ActiveLine.png';
+import HomeFillIcon from './src/assets/vectors/home-fill.png';
+import HomeUnfillIcon from './src/assets/vectors/home-unfill.png';
+import WatchlistFillIcon from './src/assets/vectors/watchlist-fill.png';
+import WatchlistUnfillIcon from './src/assets/vectors/watchlist-unfill.png';
+
+import HomeStackScreen from './src/navigation/HomeStackScreen';
+import WatchlistStackScreen from './src/navigation/WatchlistStackScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -64,29 +67,6 @@ class ErrorBoundary extends React.Component {
 
     return this.props.children;
   }
-}
-
-function HomeStackScreen() {
-  return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} />
-      <HomeStack.Screen name="TopGainers" component={TopGainersScreen} />
-      <HomeStack.Screen name="TopLosers" component={TopLosersScreen} />
-      <HomeStack.Screen name="Details" component={DetailsScreen} />
-      <HomeStack.Screen name="WatchlistStocks" component={WatchlistStocksScreen} />
-      <HomeStack.Screen name="Profile" component={ProfileScreen} />
-    </HomeStack.Navigator>
-  );
-}
-
-function WatchlistStackScreen() {
-  return (
-    <WatchlistStack.Navigator screenOptions={{ headerShown: false }}>
-      <WatchlistStack.Screen name="WatchlistMain" component={WatchlistScreen} />
-      <WatchlistStack.Screen name="WatchlistStocks" component={WatchlistStocksScreen} />
-      <WatchlistStack.Screen name="Details" component={DetailsScreen} />
-    </WatchlistStack.Navigator>
-  );
 }
 
 export default function App() {
